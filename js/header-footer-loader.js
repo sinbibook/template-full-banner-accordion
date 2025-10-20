@@ -336,11 +336,6 @@ class HeaderFooterLoader {
 
     // Apply HeaderFooterMapper for dynamic content mapping
     async applyHeaderFooterMapping() {
-        // iframe 환경에서는 PreviewHandler가 담당하므로 여기서 실행하지 않음
-        if (window.parent !== window) {
-            return;
-        }
-
         // HeaderFooterMapper가 로드되어 있는지 확인
         if (typeof HeaderFooterMapper === 'undefined') {
             console.warn('⚠️ HeaderFooterMapper not loaded, skipping header/footer mapping');
@@ -348,12 +343,38 @@ class HeaderFooterLoader {
         }
 
         try {
-            // HeaderFooterMapper 인스턴스 생성 및 초기화
-            const headerFooterMapper = new HeaderFooterMapper();
-            await headerFooterMapper.initialize();
+            // iframe 환경(미리보기)인 경우
+            if (window.parent !== window) {
+                // PreviewHandler가 데이터를 제공할 때까지 대기
+                // 최대 5초 동안 100ms 간격으로 확인
+                let attempts = 0;
+                const maxAttempts = 50;
 
-            // Header와 Footer 매핑 실행
-            await headerFooterMapper.mapHeaderFooter();
+                const waitForData = async () => {
+                    // PreviewHandler가 데이터를 받았는지 확인
+                    if (window.previewHandler?.currentData) {
+                        // 데이터가 있으면 즉시 매핑
+                        const headerFooterMapper = new HeaderFooterMapper();
+                        headerFooterMapper.data = window.previewHandler.currentData;
+                        headerFooterMapper.isDataLoaded = true;
+                        await headerFooterMapper.mapHeaderFooter();
+                        return;
+                    }
+
+                    // 아직 데이터가 없으면 재시도
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(waitForData, 100);
+                    }
+                };
+
+                waitForData();
+            } else {
+                // 일반 환경에서는 기존 로직 유지
+                const headerFooterMapper = new HeaderFooterMapper();
+                await headerFooterMapper.initialize();
+                await headerFooterMapper.mapHeaderFooter();
+            }
         } catch (error) {
             console.error('❌ Header/Footer mapping failed:', error);
         }
