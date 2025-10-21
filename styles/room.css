@@ -36,12 +36,12 @@
     }
 
     /* 모바일에서 hero 텍스트 크기 축소 */
-    .hero-text h1 {
-        font-size: 1.8rem !important;
+    #room-hero-name {
+        font-size: 1.8rem;
     }
 
-    .hero-text p {
-        font-size: 0.875rem !important;
+    #room-hero-description {
+        font-size: 0.875rem;
     }
 
     /* 모바일에서 슬라이드 인디케이터 축소 */
