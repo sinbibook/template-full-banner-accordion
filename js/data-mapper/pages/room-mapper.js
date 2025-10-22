@@ -492,18 +492,14 @@ class RoomMapper extends BaseDataMapper {
         if (!ogImage) return;
 
         // room.images[0]에서 thumbnail, interior, exterior 순으로 첫 번째 이미지 찾기
-        const images = room.images?.[0];
-        let imageUrl = null;
+        const imageSources = [
+            room.images?.[0]?.thumbnail,
+            room.images?.[0]?.interior,
+            room.images?.[0]?.exterior,
+        ];
 
-        if (images) {
-            if (images.thumbnail && images.thumbnail.length > 0 && images.thumbnail[0]?.url) {
-                imageUrl = images.thumbnail[0].url;
-            } else if (images.interior && images.interior.length > 0 && images.interior[0]?.url) {
-                imageUrl = images.interior[0].url;
-            } else if (images.exterior && images.exterior.length > 0 && images.exterior[0]?.url) {
-                imageUrl = images.exterior[0].url;
-            }
-        }
+        const firstImageArray = imageSources.find(arr => Array.isArray(arr) && arr.length > 0);
+        const imageUrl = firstImageArray?.[0]?.url;
 
         // 우선순위: 객실 이미지 > 로고 이미지
         if (imageUrl) {
