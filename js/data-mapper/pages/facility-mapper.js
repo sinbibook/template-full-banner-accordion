@@ -188,13 +188,13 @@ class FacilityMapper extends BaseDataMapper {
             }
         };
 
-        // Small image (두 번째 이미지 또는 첫 번째)
+        // Small image (두 번째 이미지)
         const smallImage = this.safeSelect('[data-facility-small-image]');
-        applyImage(smallImage, selectedImages.length > 1 ? selectedImages[1] : selectedImages[0]);
+        applyImage(smallImage, selectedImages[1]);
 
-        // Large image (첫 번째 이미지)
+        // Large image (세 번째 이미지)
         const largeImage = this.safeSelect('[data-facility-large-image]');
-        applyImage(largeImage, selectedImages[0]);
+        applyImage(largeImage, selectedImages[2]);
     }
 
 
@@ -234,10 +234,13 @@ class FacilityMapper extends BaseDataMapper {
 
         sliderSection.style.display = 'block';
 
-        this.createSlides(selectedImages, facility.name);
-        this.createIndicators(selectedImages);
+        // 역순으로 변경 (마지막부터 첫 번째까지)
+        const reversedImages = [...selectedImages].reverse();
 
-        window.facilityTotalSlides = selectedImages.length;
+        this.createSlides(reversedImages, facility.name);
+        this.createIndicators(reversedImages);
+
+        window.facilityTotalSlides = reversedImages.length;
     }
 
     /**
