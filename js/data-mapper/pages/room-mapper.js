@@ -355,6 +355,34 @@ class RoomMapper extends BaseDataMapper {
     }
 
     /**
+     * 갤러리 아이템 생성 헬퍼 함수
+     * @param {Object|null} image - 이미지 객체 (없으면 null)
+     * @param {string} roomName - 객실명
+     * @returns {HTMLElement} 생성된 갤러리 아이템
+     */
+    _createGalleryItem(image, roomName) {
+        const galleryItem = document.createElement('div');
+        galleryItem.className = 'gallery-item';
+
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+
+        if (image) {
+            img.src = image.url;
+            img.alt = image.description || roomName;
+            img.className = 'w-full h-full object-cover';
+            img.setAttribute('data-image-fallback', '');
+        } else {
+            img.src = ImageHelpers.EMPTY_IMAGE_SVG;
+            img.alt = '이미지 없음';
+            img.className = 'w-full h-full object-cover empty-image-placeholder';
+        }
+
+        galleryItem.appendChild(img);
+        return galleryItem;
+    }
+
+    /**
      * 객실 갤러리 매핑
      */
     mapRoomGallery() {
@@ -386,26 +414,7 @@ class RoomMapper extends BaseDataMapper {
 
         // 왼쪽 컬럼: 첫 2개 이미지 (0,1번째) - 부족하면 빈 이미지로 채우기
         for (let i = 0; i < 2; i++) {
-            const galleryItem = document.createElement('div');
-            galleryItem.className = 'gallery-item';
-
-            const img = document.createElement('img');
-
-            if (firstFourImages[i]) {
-                img.src = firstFourImages[i].url;
-                img.alt = firstFourImages[i].description || room.name;
-                img.className = 'w-full h-full object-cover';
-                img.loading = 'lazy';
-                img.setAttribute('data-image-fallback', '');
-            } else {
-                img.src = ImageHelpers.EMPTY_IMAGE_SVG;
-                img.alt = '이미지 없음';
-                img.className = 'w-full h-full object-cover empty-image-placeholder';
-                img.loading = 'lazy';
-            }
-
-            galleryItem.appendChild(img);
-            galleryLeft.appendChild(galleryItem);
+            galleryLeft.appendChild(this._createGalleryItem(firstFourImages[i], room.name));
         }
 
         // 오른쪽 컬럼 생성
@@ -414,26 +423,7 @@ class RoomMapper extends BaseDataMapper {
 
         // 오른쪽 컬럼: 3,4번째 이미지 (2,3번째 인덱스) - 부족하면 빈 이미지로 채우기
         for (let i = 2; i < 4; i++) {
-            const galleryItem = document.createElement('div');
-            galleryItem.className = 'gallery-item';
-
-            const img = document.createElement('img');
-
-            if (firstFourImages[i]) {
-                img.src = firstFourImages[i].url;
-                img.alt = firstFourImages[i].description || room.name;
-                img.className = 'w-full h-full object-cover';
-                img.loading = 'lazy';
-                img.setAttribute('data-image-fallback', '');
-            } else {
-                img.src = ImageHelpers.EMPTY_IMAGE_SVG;
-                img.alt = '이미지 없음';
-                img.className = 'w-full h-full object-cover empty-image-placeholder';
-                img.loading = 'lazy';
-            }
-
-            galleryItem.appendChild(img);
-            galleryRight.appendChild(galleryItem);
+            galleryRight.appendChild(this._createGalleryItem(firstFourImages[i], room.name));
         }
 
         // 그리드에 추가

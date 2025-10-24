@@ -405,9 +405,7 @@
 }
 
 .room-gallery .gallery-right .gallery-item {
-    aspect-ratio: 4/3;
     flex: 1;
-    opacity: 1;
 }
 
 .gallery-right {
