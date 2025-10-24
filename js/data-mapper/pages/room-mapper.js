@@ -377,8 +377,8 @@ class RoomMapper extends BaseDataMapper {
             ? interiorImages.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
             : [];
 
-        // 첫 3개 이미지(0,1,2번째)를 2:1 그리드 구조로 배치
-        const firstThreeImages = sortedImages.slice(0, 3);
+        // 첫 4개 이미지(0,1,2,3번째)를 2:2 그리드 구조로 배치
+        const firstFourImages = sortedImages.slice(0, 4);
 
         // 왼쪽 컬럼 생성
         const galleryLeft = document.createElement('div');
@@ -391,9 +391,9 @@ class RoomMapper extends BaseDataMapper {
 
             const img = document.createElement('img');
 
-            if (firstThreeImages[i]) {
-                img.src = firstThreeImages[i].url;
-                img.alt = firstThreeImages[i].description || room.name;
+            if (firstFourImages[i]) {
+                img.src = firstFourImages[i].url;
+                img.alt = firstFourImages[i].description || room.name;
                 img.className = 'w-full h-full object-cover';
                 img.loading = 'lazy';
                 img.setAttribute('data-image-fallback', '');
@@ -412,27 +412,29 @@ class RoomMapper extends BaseDataMapper {
         const galleryRight = document.createElement('div');
         galleryRight.className = 'gallery-right';
 
-        // 오른쪽 컬럼: 3번째 이미지 (2번째 인덱스) - 없으면 빈 이미지
-        const galleryItem = document.createElement('div');
-        galleryItem.className = 'gallery-item';
+        // 오른쪽 컬럼: 3,4번째 이미지 (2,3번째 인덱스) - 부족하면 빈 이미지로 채우기
+        for (let i = 2; i < 4; i++) {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
 
-        const img = document.createElement('img');
+            const img = document.createElement('img');
 
-        if (firstThreeImages[2]) {
-            img.src = firstThreeImages[2].url;
-            img.alt = firstThreeImages[2].description || room.name;
-            img.className = 'w-full h-full object-cover';
-            img.loading = 'lazy';
-            img.setAttribute('data-image-fallback', '');
-        } else {
-            img.src = ImageHelpers.EMPTY_IMAGE_SVG;
-            img.alt = '이미지 없음';
-            img.className = 'w-full h-full object-cover empty-image-placeholder';
-            img.loading = 'lazy';
+            if (firstFourImages[i]) {
+                img.src = firstFourImages[i].url;
+                img.alt = firstFourImages[i].description || room.name;
+                img.className = 'w-full h-full object-cover';
+                img.loading = 'lazy';
+                img.setAttribute('data-image-fallback', '');
+            } else {
+                img.src = ImageHelpers.EMPTY_IMAGE_SVG;
+                img.alt = '이미지 없음';
+                img.className = 'w-full h-full object-cover empty-image-placeholder';
+                img.loading = 'lazy';
+            }
+
+            galleryItem.appendChild(img);
+            galleryRight.appendChild(galleryItem);
         }
-
-        galleryItem.appendChild(img);
-        galleryRight.appendChild(galleryItem);
 
         // 그리드에 추가
         galleryGrid.appendChild(galleryLeft);
