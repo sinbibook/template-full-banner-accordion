@@ -523,7 +523,18 @@ class PreviewHandler {
         } else if (page === 'directions') {
             if (window.DirectionsMapper) {
                 const mapper = this.createMapper(DirectionsMapper);
-                mapper.mapPage();
+
+                switch (section) {
+                    case 'hero':
+                        mapper.mapHeroSection();
+                        break;
+                    case 'notice':
+                        mapper.mapNoticeSection();
+                        break;
+                    default:
+                        mapper.mapPage();
+                        break;
+                }
             }
         }
     }

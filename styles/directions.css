@@ -46,7 +46,7 @@
 }
 
 .resort-info {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .section-title {
@@ -54,6 +54,11 @@
     font-weight: 500;
     color: #111827;
     margin-bottom: 3rem;
+}
+
+/* Notice item - reduce margin */
+.notice-item {
+    margin-bottom: 4rem;
 }
 
 .info-grid {
@@ -146,6 +151,11 @@
     font-weight: 500;
     color: #111827;
     margin-bottom: 2rem;
+}
+
+/* Notice section title - reduce margin */
+.notice-title {
+    margin-bottom: 1rem;
 }
 
 .map-wrapper {

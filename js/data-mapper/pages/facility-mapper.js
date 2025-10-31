@@ -190,11 +190,11 @@ class FacilityMapper extends BaseDataMapper {
 
         // Small image (두 번째 이미지)
         const smallImage = this.safeSelect('[data-facility-small-image]');
-        applyImage(smallImage, selectedImages[1]);
+        applyImage(smallImage, selectedImages.length > 1 ? selectedImages[1] : selectedImages[0]);
 
-        // Large image (세 번째 이미지)
+        // Large image (세 번째 이미지 또는 첫 번째)
         const largeImage = this.safeSelect('[data-facility-large-image]');
-        applyImage(largeImage, selectedImages[2]);
+        applyImage(largeImage, selectedImages.length > 2 ? selectedImages[2] : selectedImages[0]);
     }
 
 
@@ -219,11 +219,11 @@ class FacilityMapper extends BaseDataMapper {
             return;
         }
 
-        // facility.images 배열에서 이미지 가져오기 (isSelected: true만 필터링 후 sortOrder로 정렬)
+        // facility.images 배열에서 이미지 가져오기 (isSelected: true만 필터링 후 sortOrder로 역순 정렬)
         const mainImages = facility.images || [];
         const selectedImages = mainImages
             .filter(img => img.isSelected)
-            .sort((a, b) => a.sortOrder - b.sortOrder);
+            .sort((a, b) => b.sortOrder - a.sortOrder);
 
         if (selectedImages.length === 0) {
             // 선택된 이미지가 없으면 빈 슬라이드 1개 표시

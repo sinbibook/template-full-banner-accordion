@@ -218,6 +218,10 @@
               "hero": {
                 "title": "오시는길 히어로 타이틀",
                 "images": []
+              },
+              "notice": {
+                "title": "",
+                "description": ""
               }
             }
           ]

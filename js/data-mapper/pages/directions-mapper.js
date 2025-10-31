@@ -108,12 +108,56 @@ class DirectionsMapper extends BaseDataMapper {
     }
 
     /**
+     * Notice 섹션 매핑 (customFields 기반)
+     */
+    mapNoticeSection() {
+        if (!this.isDataLoaded) return;
+
+        // directions 페이지 전용 섹션 데이터 가져오기
+        const directionsData = this.safeGet(this.data, 'homepage.customFields.pages.directions.sections.0');
+        const noticeSection = this.safeSelect('[data-directions-notice-section]');
+        const notice = directionsData?.notice;
+
+        // notice 데이터가 없거나 title/description이 모두 비어있으면 섹션 숨김
+        const hasTitle = notice?.title && notice.title.trim() !== '';
+        const hasDescription = notice?.description && notice.description.trim() !== '';
+
+        if (!notice || (!hasTitle && !hasDescription)) {
+            if (noticeSection) noticeSection.style.display = 'none';
+            return;
+        }
+
+        // notice 데이터가 있으면 섹션 표시
+        if (noticeSection) noticeSection.style.display = '';
+
+        // Notice 제목 매핑
+        const noticeTitle = this.safeSelect('[data-directions-notice-title]');
+        if (noticeTitle) {
+            noticeTitle.textContent = hasTitle ? notice.title : '';
+        }
+
+        // Notice 설명 매핑
+        const noticeDescription = this.safeSelect('[data-directions-notice-description]');
+        if (noticeDescription) {
+            noticeDescription.innerHTML = ''; // 기존 콘텐츠 초기화 및 XSS 방지
+            if (hasDescription) {
+                // \n을 <br>로 변환하여 안전하게 줄바꿈 처리
+                const lines = notice.description.split('\n');
+                lines.forEach((line, index) => {
+                    noticeDescription.appendChild(document.createTextNode(line));
+                    if (index < lines.length - 1) {
+                        noticeDescription.appendChild(document.createElement('br'));
+                    }
+                });
+            }
+        }
+    }
+
+    /**
      * 지도 섹션 매핑 (지도 제목)
      */
     mapMapSection() {
         if (!this.isDataLoaded || !this.data.property) return;
-
-        const property = this.data.property;
 
         // 지도 제목 매핑
         const mapTitleElement = this.safeSelect('[data-directions-map-title]');
@@ -254,6 +298,7 @@ class DirectionsMapper extends BaseDataMapper {
         // 순차적으로 각 섹션 매핑
         this.mapHeroSection();
         this.mapAddressSection();
+        this.mapNoticeSection(); // Notice 섹션 매핑 추가
         this.mapMapSection();
         this.mapMapIframe(); // OpenStreetMap iframe 매핑 추가
         this.mapLegacySelectors();
