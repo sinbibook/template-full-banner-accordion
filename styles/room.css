@@ -98,7 +98,7 @@
     backdrop-filter: blur(12px);
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    display: none; /* 모바일에서 숨김 */
+    display: flex; /* 모바일에서도 표시 */
     align-items: center;
     justify-content: center;
     color: white;
@@ -556,9 +556,8 @@
         padding: 2rem;
     }
 
-    /* 데스크톱에서 버튼 표시 및 크기 복원 */
+    /* 데스크톱에서 버튼 크기 및 위치 조정 */
     .nav-button {
-        display: flex; /* 데스크톱에서 표시 */
         width: 56px;
         height: 56px;
     }
