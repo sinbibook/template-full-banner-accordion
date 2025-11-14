@@ -78,6 +78,60 @@ class BaseDataMapper {
     }
 
     // ============================================================================
+    // 📝 TEXT UTILITIES
+    // ============================================================================
+
+    /**
+     * 값이 비어있는지 확인하는 헬퍼 메서드
+     * @private
+     * @param {any} value - 확인할 값
+     * @returns {boolean} 비어있으면 true
+     */
+    _isEmptyValue(value) {
+        return value === null || value === undefined || value === '';
+    }
+
+    /**
+     * HTML 특수 문자를 이스케이프 처리하는 헬퍼 메서드 (XSS 방지)
+     * @private
+     * @param {string} text - 이스케이프할 텍스트
+     * @returns {string} 이스케이프 처리된 텍스트
+     */
+    _escapeHTML(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    /**
+     * 텍스트를 정제하는 헬퍼 메서드
+     * 빈 값이면 fallback 반환, 아니면 trim된 값 반환
+     * @param {string} text - 정제할 텍스트
+     * @param {string} fallback - 빈 값일 때 반환할 기본값
+     * @returns {string} 정제된 텍스트 또는 fallback
+     */
+    sanitizeText(text, fallback = '') {
+        if (this._isEmptyValue(text)) return fallback;
+        return text.trim();
+    }
+
+    /**
+     * 텍스트의 줄바꿈을 HTML <br> 태그로 변환하는 헬퍼 메서드 (XSS 안전)
+     * @private
+     * @param {string} text - 변환할 텍스트
+     * @param {string} fallback - 빈 값일 때 반환할 기본값
+     * @returns {string} 줄바꿈이 <br>로 변환된 HTML 문자열
+     */
+    _formatTextWithLineBreaks(text, fallback = '') {
+        if (this._isEmptyValue(text)) return fallback;
+        // 앞뒤 공백 제거
+        const trimmedText = text.trim();
+        // 먼저 HTML 특수 문자를 이스케이프 처리한 후 줄바꿈 변환
+        const escapedText = this._escapeHTML(trimmedText);
+        return escapedText.replace(/\n/g, '<br>');
+    }
+
+    // ============================================================================
     // 🖼️ IMAGE UTILITIES
     // ============================================================================
 
