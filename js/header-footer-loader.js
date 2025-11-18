@@ -13,16 +13,21 @@
     // Initialize mapper after both header and footer are loaded
     async function tryInitializeMapper() {
         if (headerLoaded && footerLoaded && window.HeaderFooterMapper) {
-            // Initialize mapper immediately
-            const mapper = new window.HeaderFooterMapper();
-            await mapper.initialize();
+            // 프리뷰 환경인지 확인 (iframe 내부)
+            const isPreview = window.parent !== window;
 
-            // Show header after mapping is complete
-            const header = document.querySelector('.top-header');
-            if (header) {
-                header.style.transition = 'opacity 0.2s ease';
-                header.style.opacity = '1';
+            if (!isPreview) {
+                // 일반 페이지: 기본 데이터로 매핑
+                const mapper = new window.HeaderFooterMapper();
+                await mapper.initialize();
+
+                // 매핑 완료 후 헤더/사이드바 표시
+                const topHeader = document.querySelector('.top-header');
+                const sideHeader = document.querySelector('.side-header');
+                if (topHeader) topHeader.classList.remove('fouc-hidden');
+                if (sideHeader) sideHeader.classList.remove('fouc-hidden');
             }
+            // 프리뷰 환경: PreviewHandler가 처리하므로 여기서는 매핑하지 않음
         }
     }
 
@@ -40,7 +45,8 @@
             // Load header CSS first
             loadCSS('styles/header.css');
 
-            const response = await fetch('common/header.html');
+            const timestamp = new Date().getTime();
+            const response = await fetch(`common/header.html?t=${timestamp}`);
             const html = await response.text();
 
             // Create a temporary container
@@ -58,8 +64,6 @@
 
             // Insert top header (hamburger-button is already inside)
             if (topHeader) {
-                // Hide immediately to prevent FOUC
-                topHeader.style.opacity = '0';
                 document.body.insertBefore(topHeader, document.body.firstChild);
             }
 
@@ -96,7 +100,8 @@
     // Load Footer
     async function loadFooter() {
         try {
-            const response = await fetch('common/footer.html');
+            const timestamp = new Date().getTime();
+            const response = await fetch(`common/footer.html?t=${timestamp}`);
             if (response.ok) {
                 // Load footer CSS
                 loadCSS('styles/footer.css');
