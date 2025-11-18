@@ -48,12 +48,12 @@ class PreviewHandler {
         // 부모 창에 준비 완료 신호 전송
         this.notifyReady();
 
-        // 어드민 데이터 대기 (3초 후 fallback) - 타이밍 여유 증가
+        // 어드민 데이터 대기 (1초 후 fallback)
         this.fallbackTimeout = setTimeout(() => {
             if (!this.adminDataReceived) {
                 this.loadFallbackData();
             }
-        }, 3000);
+        }, 1000);
 
     }
 
@@ -361,6 +361,9 @@ class PreviewHandler {
             headerFooterMapper.data = data;
             headerFooterMapper.isDataLoaded = true;
             await headerFooterMapper.mapHeaderFooter();
+
+            // 매핑 완료 후 헤더 표시 (FOUC 방지)
+            if (window.showHeaders) window.showHeaders();
         }
 
         // Logo 매핑 (모든 페이지에서 공통 실행)
@@ -712,6 +715,9 @@ class PreviewHandler {
         if (window.HeaderFooterMapper) {
             const headerFooterMapper = new HeaderFooterMapper();
             await headerFooterMapper.initialize(); // 데이터 로드 후 매핑
+
+            // 매핑 완료 후 헤더 표시 (FOUC 방지)
+            if (window.showHeaders) window.showHeaders();
         }
     }
 }

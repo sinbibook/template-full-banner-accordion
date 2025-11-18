@@ -835,3 +835,9 @@
 
     /* Hide hamburger button when sidebar is open - 데스크탑과 모바일 공통 */
 }
+
+/* FOUC Prevention */
+.top-header.fouc-hidden,
+.side-header.fouc-hidden {
+    opacity: 0 !important;
+}
