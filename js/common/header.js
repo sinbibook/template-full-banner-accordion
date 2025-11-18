@@ -4,7 +4,7 @@
 
     // Update submenu position based on header height
     function updateSubmenuPosition() {
-        const header = document.querySelector('.header');
+        const header = document.querySelector('.top-header');
         const unifiedSubmenu = document.querySelector('.unified-submenu');
 
         if (header && unifiedSubmenu) {
