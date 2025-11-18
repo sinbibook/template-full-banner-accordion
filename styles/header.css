@@ -48,9 +48,7 @@
 
 /* 스크롤 시 로고 텍스트 숨김 */
 .top-header.scrolled .logo-text {
-    opacity: 0;
-    pointer-events: none;
-    display: none;
+   visibility: hidden;
 }
 
 /* Booking Buttons Container */
