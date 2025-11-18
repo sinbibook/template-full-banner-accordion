@@ -47,40 +47,20 @@
             const temp = document.createElement('div');
             temp.innerHTML = html;
 
-            // Extract body content from the loaded HTML
-            const bodyContent = temp.querySelector('body');
+            // Find side header and top header directly from temp
+            const sideHeader = temp.querySelector('.side-header');
+            const topHeader = temp.querySelector('.top-header');
 
-            if (bodyContent) {
-                // Insert top header first
-                const topHeader = bodyContent.querySelector('.top-header');
-                if (topHeader) {
-                    // Hide immediately to prevent FOUC
-                    topHeader.style.opacity = '0';
-                    document.body.insertBefore(topHeader, document.body.firstChild);
-                }
+            // Insert side header first (so it appears before top-header in DOM)
+            if (sideHeader) {
+                document.body.insertBefore(sideHeader, document.body.firstChild);
+            }
 
-                // Insert hamburger button
-                const hamburgerButton = bodyContent.querySelector('.hamburger-button');
-                if (hamburgerButton) {
-                    document.body.insertBefore(hamburgerButton, document.body.firstChild);
-                }
-
-                // Insert side header
-                const sideHeader = bodyContent.querySelector('.side-header');
-                if (sideHeader) {
-                    document.body.insertBefore(sideHeader, document.body.firstChild);
-                }
-            } else {
-                // Fallback: Insert HTML directly
-                const headerHTML = html.replace(/<\/?(!DOCTYPE|html|head|title|link)[^>]*>/g, '');
-                const cleanHTML = headerHTML.replace(/<\/?body[^>]*>/g, '');
-                const firstChild = document.body.firstChild;
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = cleanHTML;
-
-                Array.from(tempDiv.children).forEach(child => {
-                    document.body.insertBefore(child, firstChild);
-                });
+            // Insert top header (hamburger-button is already inside)
+            if (topHeader) {
+                // Hide immediately to prevent FOUC
+                topHeader.style.opacity = '0';
+                document.body.insertBefore(topHeader, document.body.firstChild);
             }
 
             // Load header JavaScript
