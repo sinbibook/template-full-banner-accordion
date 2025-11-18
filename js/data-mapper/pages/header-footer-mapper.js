@@ -417,7 +417,7 @@ class HeaderFooterMapper extends BaseDataMapper {
         // 전화번호 매핑
         const footerPhone = this.safeSelect('[data-footer-phone]');
         if (footerPhone && property.contactPhone) {
-            footerPhone.textContent = `숙소 전화번호 : ${property.contactPhone}`;
+            footerPhone.textContent = `${property.contactPhone}`;
         }
 
         // 대표자명 매핑
