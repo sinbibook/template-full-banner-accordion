@@ -203,7 +203,7 @@ function initAccordion() {
  * Initialize marquee animation
  */
 function initMarquee() {
-    const marqueeEl = document.querySelector('.marquee-text');
+    const marqueeEl = document.querySelector('[data-marquee-propery-name]');
     if (!marqueeEl) return;
 
     const text = "POOLVILLA GLAMPING";

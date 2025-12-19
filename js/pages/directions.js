@@ -184,7 +184,7 @@ function initAnimations() {
  * Initialize marquee animation
  */
 function initMarquee() {
-    const marqueeEl = document.querySelector('[data-main-marquee]');
+    const marqueeEl = document.querySelector('[data-marquee-propery-name]');
     if (!marqueeEl) return;
 
     const text = "POOLVILLA GLAMPING";
