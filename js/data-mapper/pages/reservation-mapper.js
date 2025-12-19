@@ -13,49 +13,46 @@ class ReservationMapper extends BaseDataMapper {
     // ============================================================================
 
     /**
-     * Hero 섹션 매핑 (Fullscreen Slider)
+     * Hero 섹션 매핑 (Hero Slider)
      */
     mapHeroSection() {
         if (!this.isDataLoaded || !this.data.property) return;
 
         const reservationData = this.safeGet(this.data, 'homepage.customFields.pages.reservation.sections.0');
-        const sliderInner = document.querySelector('.fullscreen-slider-inner');
-        if (!sliderInner) return;
+        const slider = document.querySelector('[data-hero-slider]');
+        if (!slider) return;
 
-        // Fullscreen Slider 이미지 필터링 및 정렬
+        // Hero 이미지 필터링 및 정렬
         const heroImages = reservationData?.hero?.images;
         const selectedImages = heroImages
             ?.filter(img => img.isSelected)
             .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)) || [];
 
-        sliderInner.innerHTML = '';
+        // 기존 슬라이드 제거
+        const existingSlides = slider.querySelectorAll('.hero-slide');
+        existingSlides.forEach(slide => slide.remove());
 
         if (selectedImages.length === 0) {
-            // 이미지가 없을 때 placeholder 슬라이드 추가
+            // 이미지가 없을 때 기본 이미지 사용
             const slide = document.createElement('div');
-            slide.className = 'fullscreen-slide active';
+            slide.className = 'hero-slide active';
             const img = document.createElement('img');
-            ImageHelpers.applyPlaceholder(img);
+            img.src = 'images/pool3.jpg';
+            img.alt = 'Reservation View';
             slide.appendChild(img);
-            sliderInner.appendChild(slide);
-            return;
-        }
-
-        // 이미지가 있으면 슬라이드 생성
-        selectedImages.forEach((image, index) => {
-            const slide = document.createElement('div');
-            slide.className = `fullscreen-slide${index === 0 ? ' active' : ''}`;
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = image.description || '예약안내';
-            img.loading = index === 0 ? 'eager' : 'lazy';
-            slide.appendChild(img);
-            sliderInner.appendChild(slide);
-        });
-
-        // Fullscreen Slider 컴포넌트 재초기화
-        if (typeof FullscreenSlider !== 'undefined') {
-            new FullscreenSlider('.fullscreen-slider');
+            slider.appendChild(slide);
+        } else {
+            // 이미지가 있으면 슬라이드 생성
+            selectedImages.forEach((image, index) => {
+                const slide = document.createElement('div');
+                slide.className = `hero-slide${index === 0 ? ' active' : ''}`;
+                const img = document.createElement('img');
+                img.src = image.url;
+                img.alt = image.description || '예약안내';
+                img.loading = index === 0 ? 'eager' : 'lazy';
+                slide.appendChild(img);
+                slider.appendChild(slide);
+            });
         }
     }
 
@@ -95,6 +92,20 @@ class ReservationMapper extends BaseDataMapper {
 
         if (usageGuideElement && property.usageGuide) {
             usageGuideElement.innerHTML = this._formatTextWithLineBreaks(property.usageGuide);
+        }
+    }
+
+    /**
+     * 예약안내 섹션 매핑 (data-reservation-guide)
+     */
+    mapReservationGuideSection() {
+        if (!this.isDataLoaded || !this.data.property) return;
+
+        const property = this.data.property;
+        const reservationGuideElement = this.safeSelect('[data-reservation-guide]');
+
+        if (reservationGuideElement && property.reservationGuide) {
+            reservationGuideElement.innerHTML = this._formatTextWithLineBreaks(property.reservationGuide);
         }
     }
 
@@ -182,6 +193,35 @@ class ReservationMapper extends BaseDataMapper {
         });
     }
 
+    /**
+     * 배너 이미지 및 숙소명 매핑
+     */
+    mapBannerAndMarquee() {
+        if (!this.isDataLoaded || !this.data.property) return;
+
+        const property = this.data.property;
+
+        // 숙소 영문명 매핑
+        const subtitleElement = this.safeSelect('[data-property-subtitle]');
+        if (subtitleElement) {
+            subtitleElement.textContent = property.subtitle || 'POOL VILLA GLAMPING';
+        }
+
+        // 외경 이미지 매핑
+        const exteriorImageElement = this.safeSelect('[data-property-exterior-image]');
+        if (exteriorImageElement) {
+            const exteriorImages = property.images?.exterior || [];
+            const firstImage = exteriorImages.find(img => img.isSelected && img.sortOrder === 0) || exteriorImages[0];
+            if (firstImage) {
+                exteriorImageElement.style.backgroundImage = `url('${firstImage.url}')`;
+            } else {
+                exteriorImageElement.style.backgroundImage = "url('images/exterior.jpg')";
+            }
+        }
+
+        // Marquee는 reservation.js에서 하드코딩으로 처리
+    }
+
     // ============================================================================
     // 🔄 TEMPLATE METHODS IMPLEMENTATION
     // ============================================================================
@@ -199,8 +239,10 @@ class ReservationMapper extends BaseDataMapper {
         this.mapHeroSection();
         this.mapReservationInfoSection();
         this.mapUsageSection();
+        this.mapReservationGuideSection();
         this.mapCheckInOutSection();
         this.mapRefundSection();
+        this.mapBannerAndMarquee();
 
         // 메타 태그 업데이트 (페이지별 SEO 적용)
         const property = this.data.property;
@@ -249,8 +291,10 @@ class ReservationMapper extends BaseDataMapper {
         this.mapHeroSection();
         this.mapReservationInfoSection();
         this.mapUsageSection();
+        this.mapReservationGuideSection();
         this.mapCheckInOutSection();
         this.mapRefundSection();
+        this.mapBannerAndMarquee();
     }
 
     /**

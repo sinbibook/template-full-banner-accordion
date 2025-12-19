@@ -7,84 +7,124 @@
     <meta name="keywords" content="SEO 키워드">
     <title>오시는길 - 숙소명</title>
 
+    <link rel="stylesheet" href="styles/theme.css">
     <link rel="stylesheet" href="styles/common.css">
     <link rel="stylesheet" href="styles/slider.css">
     <link rel="stylesheet" href="styles/directions.css">
+
+    <!-- 초기 템플릿 폰트 CDN -->
+    <!-- Adobe Typekit Font -->
+    <link rel="stylesheet" href="https://use.typekit.net/vll4umt.css">
+    <!-- Aritaburi Font -->
+    <style>
+        @font-face {
+            font-family: 'Aritaburi';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Arita-buri-SemiBold.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- Main Content -->
     <main class="main-content">
-        <section class="main-section fullscreen-slider">
-          <div class="fullscreen-slider-container">
-            <div class="fullscreen-slider-inner" data-directions-slider>
-              <!-- 동적으로 슬라이드가 생성됩니다 -->
-            </div>
-            <div class="fullscreen-slider-content">
-              <h2 class="fullscreen-slider-title centered">Location</h2>
-            </div>
-
-            <div class="fullscreen-slider-nav">
-              <span class="nav-arrow nav-prev">‹</span>
-              <span class="nav-current">01</span>
-              <span class="nav-divider">|</span>
-              <span class="nav-total">03</span>
-              <span class="nav-arrow nav-next">›</span>
-            </div>
-          </div>
-        </section>
-        <div class="content-wrap">
-           <div class="about-description-wrap">
-            <!-- CUSTOM FIELD : 메인 소개 섹션 타이틀 매핑 -->
-            <h2 class="about-title animate-element" data-directions-title></h2>
-
-            <div class="location-details animate-element">
-                <div class="location-address-wrapper animate-element">
-                    <svg class="location-icon" viewBox="0 0 24 24">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <!-- 숙소 주소 매핑 -->
-                    <p class="location-address" data-directions-address></p>
+         <!-- CUSTOM FIELD : 메인 소개 섹션 -->
+        <section class="hero-section hero-center-bottom">
+            <div class="hero-slider" data-hero-slider>
+                <!-- 메인 소개 섹션 업로드 이미지 매핑 (갯수 상관x)-->
+                <div class="hero-slide active">
+                    <img src="images/exterior5.jpg" alt="Location View">
+                </div>
+                <div class="hero-slide">
+                    <img src="images/exterior6.jpg" alt="Location View">
                 </div>
             </div>
-            <!-- CUSTOM FIELD : 안내사항 섹션 매핑, 없으면 display none -->
-             <div class="location-note animate-element" data-directions-notes></div>
-           </div>
+           <!-- 페이지명 하드코딩 -->
+            <div class="hero-property-title">DIRECTIONS</div>
+            <div class="hero-bottom-info">
+                <div class="hero-progress-container">
+                    <button class="hero-nav-prev" aria-label="Previous slide">&lt;</button>
+                    <span class="current-slide hero-indicators" data-current-slide>01</span>
+                    <div class="hero-progress-bar">
+                        <div class="hero-progress-fill" data-hero-progress></div>
+                    </div>
+                    <span class="total-slides hero-indicators" data-total-slides>02</span>
+                    <button class="hero-nav-next" aria-label="Next slide">&gt;</button>
+                </div>
+            </div>
+        </section>
+        <section class="location-section">
+            <div class="location-content">
+                <!-- CUSTOM FIELD : 메인 소개 섹션 타이틀 매핑 -->
+                <h2 class="about-title animate-element" data-directions-title>
+                    <!-- 숙소명 한글명 매핑 fixed / 오시는길 하드코딩 -->
+                    <span data-property-name>풀빌라 글램핑</span> 오시는 길
+                </h2>
+                <div class="location-details animate-element">
+                    <div class="location-address-wrapper animate-element">
+                        <svg class="location-icon" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 25 25" fill="none">
+                            <path d="M12 12C14.4853 12 16.5 9.98528 16.5 7.5C16.5 5.01472 14.4853 3 12 3C9.51472 3 7.5 5.01472 7.5 7.5C7.5 9.98528 9.51472 12 12 12Z" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="round"/>
+                            <path d="M12 14.0137V22" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="round"/>
+                        </svg>
+                        <!-- 숙소 주소 매핑 -->
+                        <p class="location-address" data-directions-address>경북 영덕군 영덕읍 영덕대게로 123</p>
+                    </div>
+                </div>
+                <!-- CUSTOM FIELD : 안내사항 섹션 매핑, 없으면 display none -->
+                <div class="location-note animate-element" data-directions-notes>
+                    <p>네비게이션에 '풀빌라 글램핑'으로 검색하시면 정확한 위치를 찾으실 수 있습니다.</p>
+                    <p>주차장은 충분히 마련되어 있으며, 체크인은 프론트에서 진행됩니다.</p>
+                </div>
 
-           <!-- 지도 섹션 -->
-           <section class="map-section animate-element">
-
-               <div class="map-container animate-element">
-                   <div id="kakao-map"></div>
-               </div>
-           </section>
-        </div>
+                <!-- 지도 섹션 -->
+                <div class="map-wrapper animate-element">
+                    <div class="map-container">
+                        <div id="kakao-map"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <!-- 숙소 외경이미지 1번째 매핑 -->
+    <section class="full-banner" data-main-banner>
+      <!-- 숙소 영문명 매핑 -->
+      <h2 class="full-banner-title">POOL VILLA GLAMPING</h2>
+      <div class="full-banner-circle" style="background-image: url('images/exterior2.jpg');"></div>
+    </section>
+
+    <!-- 숙소 영문명 매핑-->
+    <div class="marquee-section">
+      <div class="marquee-container">
+        <div class="marquee-text"  data-marquee-propery-name>
+          <!-- 동적으로 span이 생성됩니다 -->
+        </div>
+      </div>
+    </div>
+
 
     <!-- Kakao Map SDK -->
     <script type="text/javascript" src="js/kakao-maps-sdk.js"></script>
 
-    <!-- Include ImageWithFallback script -->
-    <script src="js/image-with-fallback.js"></script>
+    <!-- Include ImageWithFallback script (standard-template-data.json에서만 필요) -->
+    <!-- <script src="js/image-with-fallback.js"></script> -->
 
     <!-- Common JavaScript -->
     <script src="js/common.js"></script>
 
-    <!-- Image Helpers -->
-    <script src="js/image-helpers.js"></script>
+    <!-- Image Helpers (매핑 시 주석 해제 필요) -->
+    <!-- <script src="js/image-helpers.js"></script> -->
 
-    <!-- Base Data Mapper -->
-    <script src="js/data-mapper/core/base-mapper.js"></script>
+    <!-- Base Data Mapper (매핑 시 주석 해제 필요) -->
+    <!-- <script src="js/data-mapper/core/base-mapper.js"></script> -->
 
-    <!-- Directions Page Mapper -->
-    <script src="js/data-mapper/pages/directions-mapper.js"></script>
+    <!-- Directions Page Mapper (매핑 시 주석 해제 필요) -->
+    <!-- <script src="js/data-mapper/pages/directions-mapper.js"></script> -->
 
-    <!-- Preview Handler for Admin Integration -->
-    <script src="js/preview-handler.js"></script>
+    <!-- Preview Handler for Admin Integration (매핑 시 주석 해제 필요) -->
+    <!-- <script src="js/preview-handler.js"></script> -->
 
-    <!-- Header Footer Mapper -->
-    <script src="js/data-mapper/pages/header-footer-mapper.js"></script>
+    <!-- Header Footer Mapper (매핑 시 주석 해제 필요) -->
+    <!-- <script src="js/data-mapper/pages/header-footer-mapper.js"></script> -->
 
     <!-- Header and Footer Loader -->
     <script src="js/header-footer-loader.js"></script>
@@ -94,6 +134,9 @@
 
     <!-- Page-specific script -->
     <script src="js/pages/directions.js"></script>
+
+    <!-- Scroll Animations -->
+    <script src="js/scroll-animations.js"></script>
 
 </body>
 </html>

@@ -1,68 +1,203 @@
-// Directions Page with Slider and Animation
+/**
+ * Directions Page Script
+ */
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Note: Slider는 directions-mapper.js의 reinitializeSlider()에서 초기화됨
+    // Initialize hero slider
+    initHeroSlider();
 
-    // Initialize location notes with icons
-    initializeLocationNotes();
+    // Initialize map if needed
+    initMap();
 
-    // Initialize scroll animations
-    setupScrollAnimations();
+    // Initialize animations
+    initAnimations();
+
+    // Initialize marquee
+    initMarquee();
 });
 
-// 위치 안내 사항을 아이콘과 함께 동적으로 생성
-window.initializeLocationNotes = function initializeLocationNotes() {
-    const noteElement = document.querySelector('[data-directions-notes]');
-    if (!noteElement) return;
+/**
+ * Initialize Hero Slider
+ */
+function initHeroSlider() {
+    const slider = document.querySelector('[data-hero-slider]');
+    if (!slider) return;
 
-    // 텍스트 내용을 가져와서 줄바꿈으로 분할
-    const noteText = noteElement.textContent.trim();
-    if (!noteText) {
-        noteElement.style.display = 'none';
-        return;
+    const slides = slider.querySelectorAll('.hero-slide');
+    const currentSlideEl = document.querySelector('[data-current-slide]');
+    const totalSlidesEl = document.querySelector('[data-total-slides]');
+    const progressBar = document.querySelector('[data-hero-progress]');
+    const prevBtn = document.querySelector('.hero-nav-prev');
+    const nextBtn = document.querySelector('.hero-nav-next');
+
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    const slideInterval = 5000; // 5 seconds per slide
+
+    // Auto-play slider
+    let autoPlayInterval;
+    let isTransitioning = false;
+
+    // Update total slides count
+    if (totalSlidesEl) {
+        totalSlidesEl.textContent = totalSlides.toString().padStart(2, '0');
     }
 
-    const noteLines = noteText.split('\n').filter(line => line.trim() !== '');
+    // Function to show specific slide
+    function showSlide(index, immediate = false) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
 
-    // 새로운 HTML 구조 생성 (각 아이템에 애니메이션 지연 시간 추가)
-    const noteItemsHTML = noteLines.map((line, index) => {
-        const delay = 1.0 + (index * 0.15); // 1.0s, 1.15s, 1.3s 순차 지연
-        return `
-            <div class="note-item animate-element" style="transition-delay: ${delay}s;">
-                ${line.trim()}
-            </div>
-        `;
-    }).join('');
+        // Update current slide number
+        if (currentSlideEl) {
+            currentSlideEl.textContent = (index + 1).toString().padStart(2, '0');
+        }
 
-    // 기존 내용을 새로운 구조로 교체
-    noteElement.innerHTML = noteItemsHTML;
+        // Update progress bar - always fill to 100% for current slide
+        if (progressBar) {
+            // Reset to 0 then animate to 100%
+            progressBar.style.transition = 'none';
+            progressBar.style.width = '0%';
 
-    // 새로 생성된 요소들을 애니메이션 시스템에 다시 등록
-    setTimeout(() => {
-        setupScrollAnimations();
-    }, 100);
-}
+            // Start animation immediately or with minimal delay
+            if (immediate) {
+                // For first slide, start immediately
+                setTimeout(() => {
+                    progressBar.style.transition = `width ${slideInterval}ms linear`;
+                    progressBar.style.width = '100%';
+                }, 10);
+            } else {
+                // For subsequent slides
+                progressBar.offsetHeight; // Force reflow
+                progressBar.style.transition = `width ${slideInterval}ms linear`;
+                progressBar.style.width = '100%';
+            }
+        }
+    }
 
-// 스크롤 애니메이션 설정
-window.setupScrollAnimations = function setupScrollAnimations() {
-    const animateElements = document.querySelectorAll('.animate-element');
+    // Function to go to next slide
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
 
-    function checkScroll() {
-        animateElements.forEach(element => {
-            const elementTop = element.getBoundingClientRect().top;
-            const elementVisible = 150;
+    // Function to go to previous slide
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
 
-            if (elementTop < window.innerHeight - elementVisible) {
-                element.classList.add('animate');
+    // Start auto-play
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            if (!isTransitioning) {
+                nextSlide();
+            }
+        }, slideInterval);
+    }
+
+    // Function to reset auto-play
+    function resetAutoPlay() {
+        clearInterval(autoPlayInterval);
+        startAutoPlay();
+    }
+
+    // Navigation button handlers
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (!isTransitioning) {
+                isTransitioning = true;
+                clearInterval(autoPlayInterval);
+                nextSlide();
+                setTimeout(() => {
+                    isTransitioning = false;
+                    resetAutoPlay();
+                }, 100);
             }
         });
     }
 
-    // 초기 실행
-    checkScroll();
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (!isTransitioning) {
+                isTransitioning = true;
+                clearInterval(autoPlayInterval);
+                prevSlide();
+                setTimeout(() => {
+                    isTransitioning = false;
+                    resetAutoPlay();
+                }, 100);
+            }
+        });
+    }
 
-    // 스크롤 이벤트
-    window.addEventListener('scroll', checkScroll);
+    // Pause on hover
+    slider.addEventListener('mouseenter', () => {
+        clearInterval(autoPlayInterval);
+    });
 
-    // 리사이즈 이벤트
-    window.addEventListener('resize', checkScroll);
+    slider.addEventListener('mouseleave', () => {
+        if (!isTransitioning) {
+            startAutoPlay();
+        }
+    });
+
+    // Initialize first slide with immediate animation and start auto-play
+    showSlide(0, true);
+    startAutoPlay();
+}
+
+/**
+ * Initialize Map
+ */
+function initMap() {
+    // Map initialization code here if needed
+    // This can be customized based on your map provider (Google Maps, Kakao Map, etc.)
+}
+
+/**
+ * Initialize animations
+ */
+function initAnimations() {
+    const animatedElements = document.querySelectorAll('.animate-element');
+
+    if (!animatedElements.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+/**
+ * Initialize marquee animation
+ */
+function initMarquee() {
+    const marqueeEl = document.querySelector('[data-main-marquee]');
+    if (!marqueeEl) return;
+
+    const text = "POOLVILLA GLAMPING";
+    const repeatCount = 10;
+
+    // Create repeated text
+    let content = '';
+    for (let i = 0; i < repeatCount; i++) {
+        content += `<span>${text}</span>`;
+    }
+
+    marqueeEl.innerHTML = content;
+
+    // Add animation class
+    marqueeEl.classList.add('marquee-animated');
 }

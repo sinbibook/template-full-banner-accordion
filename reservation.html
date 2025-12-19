@@ -10,107 +10,130 @@
     <!-- Preload critical resources -->
     <link rel="preload" href="styles/common.css" as="style">
     <link rel="preload" href="styles/reservation.css" as="style">
+    <link rel="stylesheet" href="styles/theme.css">
     <link rel="stylesheet" href="styles/common.css">
     <link rel="stylesheet" href="styles/slider.css">
     <link rel="stylesheet" href="styles/reservation.css">
 
+    <!-- 초기 템플릿 폰트 CDN -->
+    <!-- Adobe Typekit Font -->
+    <link rel="stylesheet" href="https://use.typekit.net/vll4umt.css">
+    <!-- Aritaburi Font -->
+    <style>
+        @font-face {
+            font-family: 'Aritaburi';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Arita-buri-SemiBold.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+
 </head>
 <body>
-
-    <!-- Main Content -->
     <main class="main-content">
-
         <!-- CUSTOM FIELD : 메인 소개 섹션 -->
-        <section class="main-section fullscreen-slider">
-          <div class="fullscreen-slider-container">
-            <div class="fullscreen-slider-inner">
-              <!-- 메인 소개 섹션 업로드 이미지 전체 순서대로 매핑 -->
+        <section class="hero-section hero-center-bottom">
+            <div class="hero-slider" data-hero-slider>
+                <!-- 메인 소개 섹션 업로드 이미지 매핑 (갯수 상관x)-->
+                <div class="hero-slide active">
+                    <img src="images/pool3.jpg" alt="Reservation View">
+                </div>
+                <div class="hero-slide">
+                    <img src="images/pool4.jpg" alt="Reservation View">
+                </div>
             </div>
-
-            <!-- 하드코딩 fix! -->
-            <div class="fullscreen-slider-content">
-              <h2 class="fullscreen-slider-title centered">Reservation</h2>
+            <!-- 페이지명 하드코딩 -->
+            <div class="hero-property-title">RESERVATION</div>
+            <div class="hero-bottom-info">
+                <div class="hero-progress-container">
+                    <button class="hero-nav-prev" aria-label="Previous slide">&lt;</button>
+                    <span class="current-slide hero-indicators" data-current-slide>01</span>
+                    <div class="hero-progress-bar">
+                        <div class="hero-progress-fill" data-hero-progress></div>
+                    </div>
+                    <span class="total-slides hero-indicators" data-total-slides>02</span>
+                    <button class="hero-nav-next" aria-label="Next slide">&gt;</button>
+                </div>
             </div>
-
-            <div class="fullscreen-slider-nav">
-              <span class="nav-arrow nav-prev">‹</span>
-              <span class="nav-current">01</span>
-              <span class="nav-divider">|</span>
-              <span class="nav-total">03</span>
-              <span class="nav-arrow nav-next">›</span>
-            </div>
-          </div>
         </section>
 
     </main>
 
-    <div class="reservation-page">
-
+    <div class="reservation-about-section">
         <section class="reservation-info-section main-content-fade-in">
             <div class="reservation-intro-section">
                 <div class="reservation-intro-content">
-                    <div class="reservation-label">
-                        <!-- CUSTOM FIELD : 이용안내 섹션 타이틀 매핑 -->
-                        <span class="reservation-number" data-reservation-title></span>
-                    </div>
-                    <!-- CUSTOM FIELD : 이용안내 섹션 설명 매핑 -->
-                    <p class="reservation-description" data-reservation-description></p>
+                    <h2 class="reservation-label">
+                        <!-- 숙소명 한글명 매핑 fixed / 예약안내 하드코딩 -->
+                        <span class="reservation-number animate-element" data-property-name>풀빌라 글램핑</span> 예약안내
+                    </h2>
                 </div>
-            </div>
-
-            <div class="reservation-book-now">
-                <a href="#" class="reservation-book-btn">BOOK NOW</a>
             </div>
 
             <div class="reservation-content-layout">
                 <div class="reservation-info-content">
                     <div class="reservation-details-section">
                         <!-- 숙소 이용안내 매핑 -->
-                        <div class="reservation-box animate-element">
-                            <div class="reservation-box-image">
-                                <img src="images/beach.jpg" alt="이용안내 이미지">
-                            </div>
+                        <div class="reservation-box animate-element" data-property-usage-guide>
                             <h3 class="reservation-box-title">이용안내</h3>
-                            <!-- 숙소 이용안내 텍스트 매핑 -->
-                            <div class="reservation-box-content reservation-text-content" data-usage-guide></div>
+                            <div class="reservation-box-content reservation-text-content">
+                                1. 전 객실 한 커플 또는 가족 구성원만 입실 가능한 숙소입니다. (그 외 구성원은 입실 불가)<br>
+                                2. 화재 및 냄새로 인해 객실 내 냄새가 심한 음식(돼지고기, 생선, 청국장, 대게 등)은 펜션 내 취식 및 조리 불가합니다.<br>
+                                3. 소음 문제로 3인 이상일 경우 가족 구성원만 입실 가능합니다.<br>
+                                4. 개인화기 사용 금지<br>
+                                5. 객실 내 금연<br>
+                                6. 반려동물 입실 불가<br>
+                                7. 22시 이후 과도한 소음 자제 부탁드립니다.
+                            </div>
+                        </div>
+
+                        <!-- 숙소 예약안내 매핑 -->
+                        <div class="reservation-box animate-element" data-property-reservation-guide>
+                            <h3 class="reservation-box-title">예약안내</h3>
+                            <div class="reservation-box-content reservation-text-content">
+                                ▶ 예약 확정 후 24시간 이내 계약금(30%) 입금 필수<br>
+                                ▶ 예약금 입금 후 예약 확정 안내 문자 발송<br>
+                                ▶ 성수기 및 특별 기간 예약 시 요금 상이<br>
+                                ▶ 현장 결제 시 카드 및 현금 가능<br>
+                                ▶ 예약 변경 및 취소는 전화 문의 바랍니다.
+                            </div>
                         </div>
 
                         <!-- 숙소 운영정보 매핑 -->
-                        <div class="reservation-box animate-element">
-                            <div class="reservation-box-image">
-                                <img src="images/sky.jpg" alt="입퇴실 안내 이미지">
-                            </div>
+                        <div class="reservation-box animate-element" data-property-checkin-guide>
                             <h3 class="reservation-box-title">입/퇴실 안내</h3>
                             <div class="reservation-box-content">
                                 <!-- 체크인/체크아웃 시간 -->
                                 <div class="checkin-checkout-times">
                                     <div class="detail-item">
                                         <span class="detail-label">체크인</span>
-                                        <span class="detail-value" data-checkin-time></span>
+                                        <span class="detail-value" data-checkin-time>15:00</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">체크아웃</span>
-                                        <span class="detail-value" data-checkout-time></span>
+                                        <span class="detail-value" data-checkout-time>11:00</span>
                                     </div>
                                 </div>
                                 <!-- 운영정보 텍스트 -->
                                 <div class="operation-info-section">
-                                    <div class="reservation-text-content operation-info-text" data-operation-info></div>
+                                    <div class="reservation-text-content operation-info-text">
+                                        체크인 시간 전 도착시 짐 보관 가능합니다.<br>
+                                        체크아웃 시간 연장은 사전 협의 바랍니다.<br>
+                                        타월 및 키 카드 제공<br>
+                                        출입카드는 보증금 10만원 지불 후 발급 (퇴실 시 반환)
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- 숙소 환불정책 매핑 -->
-                        <div class="reservation-box refund-box animate-element">
-                            <div class="reservation-box-image">
-                                <img src="images/flower.jpg" alt="환불 안내 이미지">
-                            </div>
+                        <div class="reservation-box refund-box animate-element" data-property-refund-guide>
                             <h3 class="reservation-box-title">환불/취소수수료</h3>
                             <div class="refund-content">
                                 <div class="refund-table-section">
                                     <h4 class="refund-section-title">환불 규정표</h4>
                                     <div class="refund-table-wrapper">
-                                        <!-- 환불 정책 테이블 매핑 -->
+                                        <!-- 환불 정책 테이블 -->
                                         <table class="refund-table">
                                             <thead>
                                                 <tr>
@@ -119,51 +142,100 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="refund-table-body">
+                                                <tr>
+                                                    <td>이용일 7일 전</td>
+                                                    <td>100% 환불</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>이용일 5일 전</td>
+                                                    <td>70% 환불</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>이용일 3일 전</td>
+                                                    <td>50% 환불</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>이용일 1일 전</td>
+                                                    <td>30% 환불</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>이용일 당일</td>
+                                                    <td class="no-refund">환불 불가</td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <div class="refund-text-section">
                                     <h4 class="refund-section-title">취소 및 환불 안내</h4>
-                                    <!-- 환불 정책 안내문 텍스트 매핑 : 없을 시 display : none -->
-                                    <div class="refund-notes reservation-text-content" data-refund-notes></div>
+                                    <!-- 환불 정책 안내문 텍스트 -->
+                                    <div class="refund-notes reservation-text-content">
+                                        ※ 취소 수수료는 예약 사이트에 따라 다를 수 있습니다.<br>
+                                        ※ 취소 수수료는 예약 금액에서 차감 후 환불됩니다.<br>
+                                        ※ 당일 취소 및 NO-SHOW는 환불이 불가합니다.<br>
+                                        ※ 예약 취소는 평일 오전 10시 ~ 오후 6시까지만 가능합니다.
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <!-- 숙소 외경이미지 아무거나 매핑 -->
+                <div class="reservation-image-section">
+                    <img src="images/exterior2.jpg" alt="Reservation Image">
                 </div>
             </div>
 
         </section>
+
+        <!-- 예약하기 버튼 링크 추가 -->
+        <div class="reservation-book-now">
+            <a href="#" class="reservation-book-btn">BOOK NOW</a>
+        </div>
     </div>
 
-    <!-- Include ImageWithFallback script -->
-    <script src="js/image-with-fallback.js"></script>
+    <!-- 숙소 외경이미지 2번째 매핑 -->
+    <section class="full-banner animate-element" data-main-banner>
+      <h2 class="full-banner-title">POOL VILLA GLAMPING</h2>
+      <div class="full-banner-circle" style="background-image: url('images/exterior3.jpg');"></div>
+    </section>
+
+    <!-- 숙소 영문명 매핑-->
+    <div class="marquee-section">
+      <div class="marquee-container">
+        <div class="marquee-text" data-marquee-propery-name>
+          <!-- 동적으로 span이 생성됩니다 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Include ImageWithFallback script (standard-template-data.json에서만 필요) -->
+    <!-- <script src="js/image-with-fallback.js"></script> -->
 
     <!-- Image Helpers -->
-    <script src="js/image-helpers.js"></script>
+    <!-- <script src="js/image-helpers.js"></script> -->
 
     <!-- Base Data Mapper -->
-    <script src="js/data-mapper/core/base-mapper.js"></script>
+    <!-- <script src="js/data-mapper/core/base-mapper.js"></script> -->
 
     <!-- Reservation Page Mapper -->
-    <script src="js/data-mapper/pages/reservation-mapper.js"></script>
+    <!-- <script src="js/data-mapper/pages/reservation-mapper.js"></script> -->
 
     <!-- Preview Handler for Admin Integration -->
-    <script src="js/preview-handler.js"></script>
+    <!-- <script src="js/preview-handler.js"></script> -->
 
     <!-- Header Footer Mapper -->
-    <script src="js/data-mapper/pages/header-footer-mapper.js"></script>
+    <!-- <script src="js/data-mapper/pages/header-footer-mapper.js"></script> -->
 
     <!-- Header and Footer Loader -->
     <script src="js/header-footer-loader.js"></script>
 
-    <!-- Fullscreen Slider Component -->
-    <script src="js/components/fullscreen-slider.js"></script>
-
     <!-- Page-specific script -->
     <script src="js/pages/reservation.js"></script>
+
+    <!-- Scroll Animations -->
+    <script src="js/scroll-animations.js"></script>
 
 </body>
 </html>

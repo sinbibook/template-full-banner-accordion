@@ -164,10 +164,24 @@ class IndexMapper extends BaseDataMapper {
         const sliderContainer = this.safeSelect('[data-hero-slider]');
         if (!sliderContainer) return;
 
-        // isSelected가 true인 이미지만 필터링하고 sortOrder로 정렬
-        const selectedImages = images
-            .filter(img => img.isSelected === true)
-            .sort((a, b) => a.sortOrder - b.sortOrder);
+        // images가 문자열 배열인지 객체 배열인지 확인
+        let selectedImages = [];
+        if (images && images.length > 0) {
+            if (typeof images[0] === 'string') {
+                // demo-filled.json의 경우: 문자열 배열을 객체 배열로 변환
+                selectedImages = images.map((imgUrl, index) => ({
+                    url: imgUrl.replace('./', ''),
+                    description: `Hero Image ${index + 1}`,
+                    isSelected: true,
+                    sortOrder: index + 1
+                }));
+            } else {
+                // standard-template-data.json의 경우: isSelected가 true인 이미지만 필터링
+                selectedImages = images
+                    .filter(img => img.isSelected === true)
+                    .sort((a, b) => a.sortOrder - b.sortOrder);
+            }
+        }
 
         // 슬라이더 초기화
         sliderContainer.innerHTML = '';
@@ -178,7 +192,10 @@ class IndexMapper extends BaseDataMapper {
             slideDiv.className = 'hero-slide active';
 
             const imgElement = document.createElement('img');
-            ImageHelpers.applyPlaceholder(imgElement);
+            // demo-filled.json일 때는 ImageHelpers 사용하지 않음
+            if (this.dataSource === 'standard-template-data.json' && typeof ImageHelpers !== 'undefined') {
+                if (typeof ImageHelpers !== 'undefined') ImageHelpers.applyPlaceholder(imgElement);
+            }
 
             slideDiv.appendChild(imgElement);
             sliderContainer.appendChild(slideDiv);
@@ -220,10 +237,21 @@ class IndexMapper extends BaseDataMapper {
             titleElement.textContent = this.sanitizeText(essenceData?.title, '특징 섹션 타이틀');
         }
 
-        // 설명 매핑
+        // 설명 매핑 (description이 images 다음에 오는 새로운 구조 지원)
         const descElement = this.safeSelect('[data-essence-description]');
         if (descElement) {
             descElement.innerHTML = this._formatTextWithLineBreaks(essenceData?.description, '특징 섹션 설명');
+        }
+
+        // Essence 이미지 매핑 (배경 이미지나 메인 이미지가 있다면)
+        const essenceImg = this.safeSelect('[data-essence-img]');
+        if (essenceImg && essenceData.images && essenceData.images.length > 0) {
+            // isSelected가 true인 첫 번째 이미지 사용
+            const selectedImage = essenceData.images.find(img => img.isSelected === true) || essenceData.images[0];
+            if (selectedImage) {
+                essenceImg.src = selectedImage.url;
+                essenceImg.alt = this.sanitizeText(selectedImage.description, '핵심 메시지 이미지');
+            }
         }
     }
 
@@ -247,7 +275,7 @@ class IndexMapper extends BaseDataMapper {
         // 메인 이미지 매핑
         const mainImg = this.safeSelect('[data-signature-main-img]');
         if (mainImg) {
-            ImageHelpers.applyImageOrPlaceholder(mainImg, signatureData.images);
+            if (typeof ImageHelpers !== 'undefined') ImageHelpers.applyImageOrPlaceholder(mainImg, signatureData.images);
         }
 
         // isSelected가 true인 이미지만 필터링하고 sortOrder로 정렬
@@ -287,7 +315,7 @@ class IndexMapper extends BaseDataMapper {
                 thumb.setAttribute('data-index', index);
             } else {
                 // 이미지가 없을 경우 placeholder 적용
-                ImageHelpers.applyPlaceholder(img);
+                if (typeof ImageHelpers !== 'undefined') ImageHelpers.applyPlaceholder(img);
             }
         });
     }
@@ -297,101 +325,13 @@ class IndexMapper extends BaseDataMapper {
     // ============================================================================
 
     /**
-     * Gallery Section 매핑 (갤러리 섹션)
+     * Gallery Section 매핑 (갤러리 섹션) - DISABLED
+     * Gallery is now handled entirely by index.js
      */
     mapGallerySection() {
-        const galleryData = this.safeGet(this.data, 'homepage.customFields.pages.index.sections.0.gallery');
-        if (!galleryData) return;
-
-        // 타이틀 매핑
-        const titleElement = this.safeSelect('[data-gallery-title]');
-        if (titleElement) {
-            titleElement.textContent = this.sanitizeText(galleryData?.title, '갤러리 섹션 타이틀');
-        }
-
-        // 설명 매핑
-        const descElement = this.safeSelect('[data-gallery-description]');
-        if (descElement) {
-            descElement.innerHTML = this._formatTextWithLineBreaks(galleryData?.description, '갤러리 섹션 설명');
-        }
-
-        // 갤러리 아이템 매핑
-        if (galleryData.images && Array.isArray(galleryData.images)) {
-            this.mapGalleryItems(galleryData.images);
-        }
-    }
-
-    /**
-     * Gallery Items 동적 생성
-     */
-    mapGalleryItems(images) {
-        const sliderContainer = this.safeSelect('[data-gallery-slider]');
-        if (!sliderContainer) return;
-
-        // isSelected가 true인 이미지만 필터링하고 sortOrder로 정렬
-        const selectedImages = images
-            .filter(img => img.isSelected === true)
-            .sort((a, b) => a.sortOrder - b.sortOrder);
-
-        // 기존 내용 초기화
-        sliderContainer.innerHTML = '';
-
-        if (selectedImages.length === 0) {
-            // 이미지가 없을 경우 placeholder 아이템 추가 (UI 구조 유지)
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'gallery-item';
-
-            const imageDiv = document.createElement('div');
-            imageDiv.className = 'gallery-item-image';
-
-            const imgElement = document.createElement('img');
-            ImageHelpers.applyPlaceholder(imgElement);
-
-            imageDiv.appendChild(imgElement);
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'gallery-item-content';
-
-            const titleH3 = document.createElement('h3');
-            titleH3.className = 'gallery-item-title';
-            titleH3.textContent = '이미지 설명';
-
-            contentDiv.appendChild(titleH3);
-
-            itemDiv.appendChild(imageDiv);
-            itemDiv.appendChild(contentDiv);
-            sliderContainer.appendChild(itemDiv);
-            return;
-        }
-
-        // 갤러리 아이템 생성
-        selectedImages.forEach((img, index) => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'gallery-item';
-
-            const imageDiv = document.createElement('div');
-            imageDiv.className = 'gallery-item-image';
-
-            const imgElement = document.createElement('img');
-            imgElement.src = img.url;
-            imgElement.alt = this.sanitizeText(img.description, `Gallery Image ${index + 1}`);
-            imgElement.loading = 'lazy';
-
-            imageDiv.appendChild(imgElement);
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'gallery-item-content';
-
-            const titleH3 = document.createElement('h3');
-            titleH3.className = 'gallery-item-title';
-            titleH3.textContent = this.sanitizeText(img.description, '이미지 설명');
-
-            contentDiv.appendChild(titleH3);
-
-            itemDiv.appendChild(imageDiv);
-            itemDiv.appendChild(contentDiv);
-            sliderContainer.appendChild(itemDiv);
-        });
+        // Gallery section is now handled by index.js
+        // This function is kept empty to prevent conflicts
+        return;
     }
 
     // ============================================================================
@@ -408,7 +348,7 @@ class IndexMapper extends BaseDataMapper {
         // 배경 이미지 매핑
         const bgImg = this.safeSelect('[data-closing-bg-img]');
         if (bgImg) {
-            ImageHelpers.applyImageOrPlaceholder(bgImg, closingData.images);
+            if (typeof ImageHelpers !== 'undefined') ImageHelpers.applyImageOrPlaceholder(bgImg, closingData.images);
         }
 
         // 설명 매핑

@@ -18,8 +18,9 @@ class HeaderFooterMapper extends BaseDataMapper {
     mapFavicon() {
         if (!this.isDataLoaded) return;
 
-        // 로고 URL 추출
-        const logoUrl = ImageHelpers.extractLogoUrl(this.data);
+        // 로고 URL 추출 (ImageHelpers가 있을 때만)
+        const logoUrl = (typeof ImageHelpers !== 'undefined') ?
+            ImageHelpers.extractLogoUrl(this.data) : null;
 
         if (logoUrl) {
             // 기존 favicon 링크 찾기
@@ -57,7 +58,8 @@ class HeaderFooterMapper extends BaseDataMapper {
         const logoImage = this.safeSelect('[data-logo]');
         if (logoImage) {
             // 로고 URL 추출
-            const logoUrl = ImageHelpers.extractLogoUrl(this.data);
+            const logoUrl = (typeof ImageHelpers !== 'undefined') ?
+                ImageHelpers.extractLogoUrl(this.data) : null;
 
             if (logoUrl) {
                 logoImage.onerror = () => {
@@ -383,7 +385,8 @@ class HeaderFooterMapper extends BaseDataMapper {
         const footerLogoImage = this.safeSelect('[data-footer-logo]');
         if (footerLogoImage) {
             // 로고 URL 추출
-            const logoUrl = ImageHelpers.extractLogoUrl(this.data);
+            const logoUrl = (typeof ImageHelpers !== 'undefined') ?
+                ImageHelpers.extractLogoUrl(this.data) : null;
 
             if (logoUrl) {
                 footerLogoImage.onerror = () => {
