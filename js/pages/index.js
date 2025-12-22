@@ -143,6 +143,14 @@ class GallerySlider {
         this.intervalId = null;
         this.isPaused = false;
         this.slideDuration = 3000; // 3초마다 슬라이드
+
+        // 상수 정의 (매직 넘버 제거)
+        this.PREPEND_BUFFER_COUNT = 3; // 앞쪽 버퍼 슬라이드 개수
+        this.APPEND_CLONE_SETS = 5;    // 뒤쪽 복제 세트 수
+        this.SLIDE_GAP = 30;           // 슬라이드 간 간격 (px)
+        this.RESET_THRESHOLD = 5;      // 리셋 임계값 (끝에서 몇 개 남았을 때)
+        this.INITIAL_DELAY = 2000;     // 초기 자동 슬라이드 지연 시간 (ms)
+
         this.images = [
             { src: './images/bbq.jpg', description: 'BBQ' },
             { src: './images/breakfast.jpg', description: '조식' },
@@ -190,13 +198,24 @@ class GallerySlider {
             this.slider.appendChild(slide);
         });
 
-        // 무한 루프를 위해 원본 이미지들을 여러 번 복제 (3번 더 복제해서 총 4세트)
+        // 무한 루프를 위해 원본 이미지들을 복제 (충분한 버퍼 확보)
         const originalSlides = Array.from(this.slider.children);
-        for (let i = 0; i < 3; i++) {
+
+        // 앞쪽에 마지막 몇 개 추가 (시작 부분 버퍼)
+        const lastFewSlides = originalSlides.slice(-this.PREPEND_BUFFER_COUNT);
+        lastFewSlides.reverse().forEach(slide => {
+            this.slider.insertBefore(slide.cloneNode(true), this.slider.firstChild);
+        });
+
+        // 뒤쪽에 여러 세트 복제
+        for (let i = 0; i < this.APPEND_CLONE_SETS; i++) {
             originalSlides.forEach(slide => {
                 this.slider.appendChild(slide.cloneNode(true));
             });
         }
+
+        // 시작 위치를 첫 번째 원본 세트로 설정 (앞쪽 버퍼 고려)
+        this.index = this.PREPEND_BUFFER_COUNT; // 버퍼만큼 시작점 조정
 
         // 슬라이드 시작
         this.startSlider();
@@ -274,8 +293,12 @@ class GallerySlider {
     }
 
     startSlider() {
-        // 슬라이더 초기 위치 설정
-        this.slider.style.transform = 'translateX(0)';
+        // 슬라이더 초기 위치 설정 (버퍼 고려)
+        const firstItem = this.slider.querySelector('.gallery-item');
+        if (firstItem) {
+            const itemWidth = firstItem.offsetWidth + this.SLIDE_GAP;
+            this.slider.style.transform = `translateX(-${this.index * itemWidth}px)`;
+        }
 
         // 호버 이벤트
         this.slider.addEventListener('mouseenter', () => {
@@ -293,7 +316,7 @@ class GallerySlider {
                     this.move();
                 }
             }, this.slideDuration);
-        }, 2000);
+        }, this.INITIAL_DELAY);
     }
 
     move() {
@@ -301,13 +324,17 @@ class GallerySlider {
         const firstItem = this.slider.querySelector('.gallery-item');
         if (!firstItem) return;
 
-        const itemWidth = firstItem.offsetWidth + 30; // gap 포함
+        const itemWidth = firstItem.offsetWidth + this.SLIDE_GAP; // gap 포함
 
-        // 2세트 반까지 갔을 때 미리 리셋 (사용자가 못 보는 타이밍에)
-        if (this.index >= this.slideCount * 2) {
+        // 총 슬라이드 수 계산 (원본 + 복제본들)
+        const totalSlides = this.slider.children.length;
+
+        // 3세트를 지나면 리셋 (자연스러운 무한 루프)
+        // 전체 슬라이드 수를 고려하여 적절한 타이밍에 리셋
+        if (this.index >= this.PREPEND_BUFFER_COUNT + this.slideCount * 2) {
             // 즉시 리셋 (애니메이션 없이)
             this.slider.style.transition = 'none';
-            this.index = this.slideCount; // 두 번째 세트 시작점으로
+            this.index = this.PREPEND_BUFFER_COUNT; // 버퍼 다음의 원본 세트 시작점으로
             this.slider.style.transform = `translateX(-${this.index * itemWidth}px)`;
 
             // 리플로우 후 애니메이션 재적용
@@ -588,6 +615,37 @@ class FullpageScroll {
             });
         }, 200);
     }
+
+    // 페이지 로드 시 현재 섹션의 텍스트 즉시 표시 (새로고침 시)
+    checkAndTriggerCurrentSectionAnimation() {
+        // 현재 스크롤 위치에 따라 활성 섹션 결정
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+        for (const [index, section] of this.sections.entries()) {
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+
+            if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
+                this.currentSection = index;
+
+                // 히어로 섹션이 아닌 경우에만 텍스트 즉시 표시
+                if (!section.classList.contains('hero-section')) {
+                    const elements = section.querySelectorAll('.animate-element');
+
+                    // 새로고침 시 텍스트를 즉시 표시 (애니메이션 없이)
+                    elements.forEach(el => {
+                        // 애니메이션 클래스 추가하고 즉시 표시
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                        el.classList.add('animate');
+                    });
+                }
+
+                this.updateNavigation();
+                return;
+            }
+        }
+    }
 }
 
 /**
@@ -688,8 +746,14 @@ document.addEventListener('DOMContentLoaded', () => {
     gallerySlider.init();
 
     // 모바일이 아닐 때만 Fullpage Scroll 초기화
+    let fullpageScroll = null;
     if (window.innerWidth > 768) {
-        new FullpageScroll();
+        fullpageScroll = new FullpageScroll();
+
+        // 페이지 로드 완료 후 현재 섹션 애니메이션 체크 (더 빠르게)
+        setTimeout(() => {
+            fullpageScroll.checkAndTriggerCurrentSectionAnimation();
+        }, 300);
     }
 
     // 스크롤 감지 초기화
@@ -699,16 +763,52 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth <= 768) {
         enableMobileScroll();
         initMobileAnimations();
+    } else {
+        // 데스크톱에서 완전한 로드 후 애니메이션 활성화 (필요시에만)
+        window.addEventListener('load', () => {
+            if (fullpageScroll) {
+                // 현재 스크롤 위치가 히어로 섹션이 아닌 경우에만 실행
+                if (window.scrollY > window.innerHeight * 0.5) {
+                    setTimeout(() => {
+                        fullpageScroll.checkAndTriggerCurrentSectionAnimation();
+                    }, 100);
+                }
+            }
+        });
     }
 
-    // 초기 로드 시 두 번째 섹션부터 애니메이션 준비 (히어로는 원래 애니메이션 사용)
+    // 페이지 로드 시 텍스트 즉시 표시 설정
     setTimeout(() => {
-        const sections = document.querySelectorAll('.fp-section:not(.hero-section)');
-        sections.forEach(section => {
-            const elements = section.querySelectorAll('.animate-element');
-            elements.forEach(el => {
-                el.classList.remove('animate');
-            });
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
+        const sections = document.querySelectorAll('.fp-section');
+
+        sections.forEach((section, index) => {
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+
+            // 현재 보이는 섹션인지 확인
+            const isCurrentSection = scrollPosition >= sectionTop && scrollPosition <= sectionBottom;
+
+            // 히어로 섹션이 아닌 경우 처리
+            if (!section.classList.contains('hero-section')) {
+                const elements = section.querySelectorAll('.animate-element');
+
+                if (isCurrentSection) {
+                    // 현재 보이는 섹션은 텍스트를 즉시 표시
+                    elements.forEach(el => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                        el.classList.add('animate');
+                    });
+                } else {
+                    // 다른 섹션들은 애니메이션 대기 상태로
+                    elements.forEach(el => {
+                        el.classList.remove('animate');
+                        el.style.removeProperty('opacity');
+                        el.style.removeProperty('transform');
+                    });
+                }
+            }
         });
     }, 100);
 

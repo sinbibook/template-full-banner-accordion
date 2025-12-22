@@ -143,7 +143,7 @@ img {
 }
 
 .hero-title {
-    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    font-size: clamp(1.125rem, 2vw, 1.6rem);
     font-weight: 500;
     margin-bottom: 15px;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
@@ -151,7 +151,7 @@ img {
 }
 
 .hero-description {
-    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     font-weight: 300;
     line-height: 1.6;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
