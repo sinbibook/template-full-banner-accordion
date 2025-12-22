@@ -18,35 +18,25 @@ class HeroSlider {
 
         if (!this.sliderContainer) return;
 
-        this.createSlides();
+        this.loadSlides();
+
+        // 슬라이드가 1개 이하면 자동슬라이드 비활성화
+        if (this.totalSlides <= 1) {
+            this.updateIndicators();
+            if (this.slides[0]) {
+                this.startZoomAnimation(this.slides[0]);
+            }
+            return;
+        }
+
         this.updateIndicators();
         this.startAutoSlide();
     }
 
-    createSlides() {
-        // 이미지 데이터
-        const images = [
-            { src: './images/hero.jpg', alt: 'Hero Image 1' },
-            { src: './images/hero1.jpg', alt: 'Hero Image 2' },
-            { src: './images/hero2.jpg', alt: 'Hero Image 3' },
-            { src: './images/hero3.jpg', alt: 'Hero Image 4' }
-        ];
-
-        this.totalSlides = images.length;
-
-        // 슬라이드 생성
-        images.forEach((img, index) => {
-            const slide = document.createElement('div');
-            slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-
-            const imgElement = document.createElement('img');
-            imgElement.src = img.src;
-            imgElement.alt = img.alt;
-
-            slide.appendChild(imgElement);
-            this.sliderContainer.appendChild(slide);
-            this.slides.push(slide);
-        });
+    loadSlides() {
+        // mapper가 생성한 슬라이드 사용
+        this.slides = Array.from(this.sliderContainer.querySelectorAll('.hero-slide'));
+        this.totalSlides = this.slides.length;
 
         // 첫 번째 슬라이드 줌인 시작
         if (this.slides[0]) {
@@ -143,29 +133,11 @@ class GallerySlider {
         this.intervalId = null;
         this.isPaused = false;
         this.slideDuration = 3000; // 3초마다 슬라이드
+        this.slideCount = 0;
 
-        // 상수 정의 (매직 넘버 제거)
-        this.PREPEND_BUFFER_COUNT = 3; // 앞쪽 버퍼 슬라이드 개수
-        this.APPEND_CLONE_SETS = 5;    // 뒤쪽 복제 세트 수
+        // 상수 정의
         this.SLIDE_GAP = 30;           // 슬라이드 간 간격 (px)
-        this.RESET_THRESHOLD = 5;      // 리셋 임계값 (끝에서 몇 개 남았을 때)
         this.INITIAL_DELAY = 2000;     // 초기 자동 슬라이드 지연 시간 (ms)
-
-        this.images = [
-            { src: './images/bbq.jpg', description: 'BBQ' },
-            { src: './images/breakfast.jpg', description: '조식' },
-            { src: './images/breakfast2.jpg', description: '모닝 브런치' },
-            { src: './images/pool.jpg', description: '프라이빗 풀' },
-            { src: './images/pool2.jpg', description: '수영장' },
-            { src: './images/pool3.jpg', description: '야외 수영장' },
-            { src: './images/exterior.jpg', description: '외관 전경' },
-            { src: './images/exterior2.jpg', description: '펜션 외관' },
-            { src: './images/exterior3.jpg', description: '정원' },
-            { src: './images/room.jpg', description: '객실' },
-            { src: './images/room2.jpg', description: '침실' },
-            { src: './images/room3.jpg', description: '거실' }
-        ];
-        this.slideCount = this.images.length;
     }
 
     init() {
@@ -174,85 +146,31 @@ class GallerySlider {
             return;
         }
 
-        // 갤러리 타이틀과 설명 설정 (하드코딩)
-        const titleElement = document.querySelector('[data-gallery-title]');
-        if (titleElement) {
-            titleElement.textContent = '특별한 순간들';
-        }
-
-        const descElement = document.querySelector('[data-gallery-description]');
-        if (descElement) {
-            descElement.textContent = '당신의 특별한 순간을 이곳에서 담아보세요.';
-        }
-
         this.setupGallery();
     }
 
     setupGallery() {
-        // 기존 내용 초기화
-        this.slider.innerHTML = '';
+        // mapper가 생성한 슬라이드 읽기
+        const originalSlides = Array.from(this.slider.querySelectorAll('.gallery-item'));
+        this.slideCount = originalSlides.length;
 
-        // 원본 이미지들 생성
-        this.images.forEach((imgData, index) => {
-            const slide = this.createSlide(imgData, index);
-            this.slider.appendChild(slide);
-        });
+        // 슬라이드가 없으면 종료
+        if (this.slideCount === 0) {
+            return;
+        }
 
-        // 무한 루프를 위해 원본 이미지들을 복제 (충분한 버퍼 확보)
-        const originalSlides = Array.from(this.slider.children);
-
-        // 앞쪽에 마지막 몇 개 추가 (시작 부분 버퍼)
-        const lastFewSlides = originalSlides.slice(-this.PREPEND_BUFFER_COUNT);
-        lastFewSlides.reverse().forEach(slide => {
-            this.slider.insertBefore(slide.cloneNode(true), this.slider.firstChild);
-        });
-
-        // 뒤쪽에 여러 세트 복제
-        for (let i = 0; i < this.APPEND_CLONE_SETS; i++) {
+        // 무한 루프를 위해 원본 이미지들을 여러 번 복제 (3번 더 복제해서 총 4세트)
+        for (let i = 0; i < 3; i++) {
             originalSlides.forEach(slide => {
                 this.slider.appendChild(slide.cloneNode(true));
             });
         }
 
-        // 시작 위치를 첫 번째 원본 세트로 설정 (앞쪽 버퍼 고려)
-        this.index = this.PREPEND_BUFFER_COUNT; // 버퍼만큼 시작점 조정
+        // 시작 위치 설정
+        this.index = 0;
 
         // 슬라이드 시작
         this.startSlider();
-    }
-
-    createSlide(imgData, index) {
-        const slide = document.createElement('div');
-        slide.className = 'gallery-item';
-
-        // 홀수(0,2,4...)는 가로, 짝수(1,3,5...)는 세로
-        const isLandscape = index % 2 === 0;
-        if (isLandscape) {
-            slide.classList.add('landscape');
-        } else {
-            slide.classList.add('portrait');
-        }
-
-        // CSS는 common.css의 기존 스타일 사용 (inline style 제거)
-
-        const imageWrapper = document.createElement('div');
-        imageWrapper.className = 'gallery-item-image';
-
-        const img = document.createElement('img');
-        img.src = imgData.src;
-        img.alt = imgData.description;
-
-        const description = document.createElement('div');
-        description.className = 'gallery-item-description';
-        const descSpan = document.createElement('span');
-        descSpan.textContent = imgData.description;
-        description.appendChild(descSpan);
-
-        imageWrapper.appendChild(img);
-        slide.appendChild(imageWrapper);
-        slide.appendChild(description);
-
-        return slide;
     }
 
     addFadeOverlays() {
@@ -326,16 +244,12 @@ class GallerySlider {
 
         const itemWidth = firstItem.offsetWidth + this.SLIDE_GAP; // gap 포함
 
-        // 총 슬라이드 수 계산 (원본 + 복제본들)
-        const totalSlides = this.slider.children.length;
-
-        // 3세트를 지나면 리셋 (자연스러운 무한 루프)
-        // 전체 슬라이드 수를 고려하여 적절한 타이밍에 리셋
-        if (this.index >= this.PREPEND_BUFFER_COUNT + this.slideCount * 2) {
+        // 2세트를 지나면 리셋 (자연스러운 무한 루프)
+        if (this.index >= this.slideCount * 2) {
             // 즉시 리셋 (애니메이션 없이)
             this.slider.style.transition = 'none';
-            this.index = this.PREPEND_BUFFER_COUNT; // 버퍼 다음의 원본 세트 시작점으로
-            this.slider.style.transform = `translateX(-${this.index * itemWidth}px)`;
+            this.index = 0;
+            this.slider.style.transform = `translateX(0px)`;
 
             // 리플로우 후 애니메이션 재적용
             void this.slider.offsetWidth;
@@ -735,15 +649,34 @@ function enableMobileScroll() {
     }
 }
 
+// 전역 초기화 함수 (mapper에서 호출 가능)
+let heroSliderInstance = null;
+let gallerySliderInstance = null;
+
+window.initHeroSlider = function() {
+    if (heroSliderInstance) {
+        heroSliderInstance.stop();
+    }
+    heroSliderInstance = new HeroSlider();
+    heroSliderInstance.init();
+};
+
+window.initGallerySlider = function() {
+    if (gallerySliderInstance) {
+        gallerySliderInstance.stop();
+    }
+    gallerySliderInstance = new GallerySlider();
+    gallerySliderInstance.init();
+};
+
 // DOM 로드 시 실행
 document.addEventListener('DOMContentLoaded', () => {
-    // Hero Slider 초기화
-    const heroSlider = new HeroSlider();
-    heroSlider.init();
+    // Hero Slider 초기화 (mapper 전에 실행될 수 있으므로 슬라이드 없으면 스킵)
+    // mapper의 reinitializeSliders()에서 다시 호출됨
+    window.initHeroSlider();
 
     // Gallery Slider 초기화 (모든 디바이스에서)
-    const gallerySlider = new GallerySlider();
-    gallerySlider.init();
+    window.initGallerySlider();
 
     // 모바일이 아닐 때만 Fullpage Scroll 초기화
     let fullpageScroll = null;

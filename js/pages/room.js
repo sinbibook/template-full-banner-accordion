@@ -3,25 +3,30 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize hero slider
-    initHeroSlider();
+    // Hero Slider와 Room Detail Slider는 RoomMapper에서 데이터 매핑 후 초기화됨
+    // (슬라이드가 동적으로 생성되므로 여기서 호출하면 빈 슬라이더)
 
-    // Initialize animations
-    initAnimations();
-
-    // Initialize marquee
-    initMarquee();
-
-    // Initialize thumbnail gallery
-    initThumbnailGallery();
+    // Initialize animations (정적 요소들에 대해)
+    window.initRoomAnimations();
 });
+
+// 전역 변수로 interval 관리 (중복 호출 방지)
+window._roomHeroSliderInterval = null;
+window._roomDetailSliderInterval = null;
 
 /**
  * Initialize Hero Slider
+ * window에 노출하여 mapper에서 재초기화 가능
  */
-function initHeroSlider() {
+window.initRoomHeroSlider = function initHeroSlider() {
     const slider = document.querySelector('[data-hero-slider]');
     if (!slider) return;
+
+    // 기존 interval 클리어 (중복 호출 방지)
+    if (window._roomHeroSliderInterval) {
+        clearInterval(window._roomHeroSliderInterval);
+        window._roomHeroSliderInterval = null;
+    }
 
     const slides = slider.querySelectorAll('.hero-slide');
     const currentSlideEl = document.querySelector('[data-current-slide]');
@@ -34,8 +39,18 @@ function initHeroSlider() {
     const totalSlides = slides.length;
     const slideInterval = 5000; // 5 seconds per slide
 
-    // Auto-play slider
-    let autoPlayInterval;
+    // 슬라이드가 1개 이하면 자동 재생 불필요
+    if (totalSlides <= 1) {
+        if (totalSlidesEl) {
+            totalSlidesEl.textContent = totalSlides.toString().padStart(2, '0');
+        }
+        if (currentSlideEl) {
+            currentSlideEl.textContent = '01';
+        }
+        return;
+    }
+
+    // Auto-play slider (전역 변수 사용)
     let isTransitioning = false;
 
     // Update total slides count
@@ -90,7 +105,7 @@ function initHeroSlider() {
 
     // Start auto-play
     function startAutoPlay() {
-        autoPlayInterval = setInterval(() => {
+        window._roomHeroSliderInterval = setInterval(() => {
             if (!isTransitioning) {
                 nextSlide();
             }
@@ -99,7 +114,7 @@ function initHeroSlider() {
 
     // Function to reset auto-play
     function resetAutoPlay() {
-        clearInterval(autoPlayInterval);
+        clearInterval(window._roomHeroSliderInterval);
         startAutoPlay();
     }
 
@@ -108,7 +123,7 @@ function initHeroSlider() {
         nextBtn.addEventListener('click', () => {
             if (!isTransitioning) {
                 isTransitioning = true;
-                clearInterval(autoPlayInterval);
+                clearInterval(window._roomHeroSliderInterval);
                 nextSlide();
                 setTimeout(() => {
                     isTransitioning = false;
@@ -122,7 +137,7 @@ function initHeroSlider() {
         prevBtn.addEventListener('click', () => {
             if (!isTransitioning) {
                 isTransitioning = true;
-                clearInterval(autoPlayInterval);
+                clearInterval(window._roomHeroSliderInterval);
                 prevSlide();
                 setTimeout(() => {
                     isTransitioning = false;
@@ -134,7 +149,7 @@ function initHeroSlider() {
 
     // Pause on hover
     slider.addEventListener('mouseenter', () => {
-        clearInterval(autoPlayInterval);
+        clearInterval(window._roomHeroSliderInterval);
     });
 
     slider.addEventListener('mouseleave', () => {
@@ -149,63 +164,29 @@ function initHeroSlider() {
 }
 
 /**
- * Initialize animations
+ * Initialize Room Detail Slider
+ * window에 노출하여 mapper에서 재초기화 가능
  */
-function initAnimations() {
-    const animatedElements = document.querySelectorAll('.animate-element');
-
-    if (!animatedElements.length) return;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
-            }
-        });
-    }, {
-        threshold: 0.2,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    animatedElements.forEach(element => {
-        observer.observe(element);
-    });
-}
-
-/**
- * Initialize marquee animation
- */
-function initMarquee() {
-    const marqueeEl = document.querySelector('[data-marquee-propery-name]');
-    if (!marqueeEl) return;
-
-    const text = "POOLVILLA GLAMPING";
-    const repeatCount = 10;
-
-    // Create repeated text
-    let content = '';
-    for (let i = 0; i < repeatCount; i++) {
-        content += `<span>${text}</span>`;
+window.initRoomDetailSlider = function initRoomDetailSlider() {
+    // 기존 interval 클리어 (중복 호출 방지)
+    if (window._roomDetailSliderInterval) {
+        clearInterval(window._roomDetailSliderInterval);
+        window._roomDetailSliderInterval = null;
     }
 
-    marqueeEl.innerHTML = content;
-
-    // Add animation class
-    marqueeEl.classList.add('marquee-animated');
-}
-
-/**
- * Initialize room detail slider
- */
-function initThumbnailGallery() {
     const slides = document.querySelectorAll('.room-slide');
     const indicators = document.querySelectorAll('.indicator');
 
-    if (!slides.length || !indicators.length) return;
+    if (!slides.length) return;
 
     let currentSlide = 0;
     const totalSlides = slides.length;
     const slideInterval = 4000; // 4 seconds per slide
+
+    // 슬라이드가 1개 이하면 자동 재생 불필요
+    if (totalSlides <= 1) {
+        return;
+    }
 
     // Function to show specific slide
     function showSlide(index) {
@@ -215,7 +196,9 @@ function initThumbnailGallery() {
 
         // Add active class to current slide and indicator
         slides[index].classList.add('active');
-        indicators[index].classList.add('active');
+        if (indicators[index]) {
+            indicators[index].classList.add('active');
+        }
 
         // Update thumbnails
         const thumbs = document.querySelectorAll('.thumb-img');
@@ -231,17 +214,19 @@ function initThumbnailGallery() {
         showSlide(currentSlide);
     }
 
-    // Auto-play slider
-    let autoPlayInterval = setInterval(nextSlide, slideInterval);
+    // Start auto-play
+    function startAutoPlay() {
+        window._roomDetailSliderInterval = setInterval(nextSlide, slideInterval);
+    }
 
     // Click handlers for indicators
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
-            clearInterval(autoPlayInterval);
+            clearInterval(window._roomDetailSliderInterval);
             currentSlide = index;
             showSlide(currentSlide);
             // Restart auto-play
-            autoPlayInterval = setInterval(nextSlide, slideInterval);
+            startAutoPlay();
         });
     });
 
@@ -249,14 +234,14 @@ function initThumbnailGallery() {
     const thumbs = document.querySelectorAll('.thumb-img');
     thumbs.forEach((thumb, index) => {
         thumb.addEventListener('click', () => {
-            clearInterval(autoPlayInterval);
+            clearInterval(window._roomDetailSliderInterval);
             currentSlide = index;
             showSlide(currentSlide);
             // Update thumbnail active state
             thumbs.forEach(t => t.classList.remove('active'));
             thumb.classList.add('active');
             // Restart auto-play
-            autoPlayInterval = setInterval(nextSlide, slideInterval);
+            startAutoPlay();
         });
     });
 
@@ -264,11 +249,39 @@ function initThumbnailGallery() {
     const sliderContainer = document.querySelector('.room-slider');
     if (sliderContainer) {
         sliderContainer.addEventListener('mouseenter', () => {
-            clearInterval(autoPlayInterval);
+            clearInterval(window._roomDetailSliderInterval);
         });
 
         sliderContainer.addEventListener('mouseleave', () => {
-            autoPlayInterval = setInterval(nextSlide, slideInterval);
+            startAutoPlay();
         });
     }
+
+    // Start auto-play
+    startAutoPlay();
+}
+
+/**
+ * Initialize animations
+ * window에 노출하여 mapper에서 재초기화 가능
+ */
+window.initRoomAnimations = function initAnimations() {
+    const animatedElements = document.querySelectorAll('.animate-element:not(.animate)');
+
+    if (!animatedElements.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
 }

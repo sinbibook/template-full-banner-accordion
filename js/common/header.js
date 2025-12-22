@@ -99,8 +99,13 @@
                 url = page + '.html';
         }
 
-        // Navigate to URL
+        // Navigate to URL (preserve preview query string)
         if (url) {
+            const currentParams = new URLSearchParams(window.location.search);
+            const isPreview = currentParams.get('preview');
+            if (isPreview) {
+                url += '?preview=' + isPreview;
+            }
             window.location.href = url;
         }
     };
@@ -113,16 +118,6 @@
         element.classList.toggle('active');
         content.classList.toggle('active');
     };
-
-    // Initialize menu image slideshow
-    function initMenuHoverEffects() {
-        const menuImage = document.getElementById('menu-dynamic-image');
-        if (menuImage) {
-            // 숙소 외경이미지 매핑
-            menuImage.src = 'images/exterior.jpg';
-        }
-    }
-
 
     // Check and set header state based on scroll position
     function checkInitialScroll() {
@@ -163,11 +158,6 @@
                 toggleMenuOverlay();
             });
         }
-
-        // Initialize menu hover effects after data is loaded
-        setTimeout(() => {
-            initMenuHoverEffects();
-        }, 500);
 
         // Initialize YBS booking button
         const ybsBookingBtn = document.querySelector('[data-ybs-booking]');
