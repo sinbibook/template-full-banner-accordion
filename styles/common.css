@@ -434,6 +434,11 @@ img {
         font-size: 14px;
     }
 
+    /* 모바일에서 fp-nav 보정 제거 */
+    .hero-content {
+        margin-left: 0;
+    }
+
     .hero-title-property-name {
         font-size: 2rem;
     }
@@ -517,7 +522,7 @@ img {
 .gallery-section {
     position: relative;
     min-height: 100vh;
-    background: linear-gradient(to bottom, var(--color-secondary) 0%, var(--color-secondary) 55%, var(--color-primary) 55%, var(--color-primary) 100%);
+    background: linear-gradient(to bottom, var(--color-secondary) 0%, var(--color-secondary) 50%, var(--color-primary) 50%, var(--color-primary) 100%);
 }
 
 .gallery-section .section-overlay {
@@ -541,13 +546,16 @@ img {
     position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .gallery-header {
-    padding: 60px 60px 40px 60px;
+    padding: 40px 60px 60px 60px;
     text-align: center;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+    flex-shrink: 0;
 }
 
 .gallery-title {
@@ -563,6 +571,7 @@ img {
     color: var(--color-primary);
     line-height: 1.6;
     max-width: 600px;
+    margin: 0 auto;
 }
 
 /* Gallery Slider */
@@ -572,6 +581,9 @@ img {
     overflow: hidden;
     position: relative;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .gallery-slider {
