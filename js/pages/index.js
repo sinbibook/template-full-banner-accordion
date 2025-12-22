@@ -329,11 +329,12 @@ class GallerySlider {
         // 총 슬라이드 수 계산 (원본 + 복제본들)
         const totalSlides = this.slider.children.length;
 
-        // 끝에서 몇 개 남았을 때 미리 리셋 (자연스러운 무한 루프)
-        if (this.index >= totalSlides - this.slideCount - this.RESET_THRESHOLD) {
+        // 3세트를 지나면 리셋 (자연스러운 무한 루프)
+        // 전체 슬라이드 수를 고려하여 적절한 타이밍에 리셋
+        if (this.index >= this.PREPEND_BUFFER_COUNT + this.slideCount * 2) {
             // 즉시 리셋 (애니메이션 없이)
             this.slider.style.transition = 'none';
-            this.index = this.PREPEND_BUFFER_COUNT + this.slideCount; // 첫 번째 복제 세트 시작점으로
+            this.index = this.PREPEND_BUFFER_COUNT; // 버퍼 다음의 원본 세트 시작점으로
             this.slider.style.transform = `translateX(-${this.index * itemWidth}px)`;
 
             // 리플로우 후 애니메이션 재적용
