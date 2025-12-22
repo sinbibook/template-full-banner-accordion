@@ -14,9 +14,9 @@
                 <div class="footer-top">
                     <div class="footer-left-section">
                         <div class="footer-left-content">
-                            <!-- 왼쪽: 메뉴 그룹 -->
+                            <!-- 메뉴 그룹 -->
                             <div class="footer-menu-groups">
-                                <!-- 프롤로그 그룹 -->
+                                <!-- 프롤로그 그룹 (정적) -->
                                 <div class="footer-menu-group">
                                     <h4 class="footer-menu-title">프롤로그</h4>
                                     <div class="footer-menu-items">
@@ -24,21 +24,21 @@
                                         <a href="#" onclick="navigateTo('directions')">오시는길</a>
                                     </div>
                                 </div>
-                                <!-- 공간소개 그룹 -->
+                                <!-- 공간소개 그룹 : rooms[] 동적 매핑 -->
                                 <div class="footer-menu-group">
                                     <h4 class="footer-menu-title">공간소개</h4>
+                                    <!-- rooms 배열에서 동적 생성 -->
                                     <div class="footer-menu-items" data-footer-rooms>
-                                        <a href="#" onclick="navigateTo('room')">객실명</a>
                                     </div>
                                 </div>
-                                <!-- 시설소개 그룹 -->
+                                <!-- 시설소개 그룹 : facilities[] 동적 매핑 -->
                                 <div class="footer-menu-group">
                                     <h4 class="footer-menu-title">시설소개</h4>
+                                    <!-- facilities 배열에서 동적 생성 -->
                                     <div class="footer-menu-items" data-footer-facilities>
-                                        <a href="#" onclick="navigateTo('facility')">시설명</a>
                                     </div>
                                 </div>
-                                <!-- 예약안내 그룹 -->
+                                <!-- 예약안내 그룹 (정적) -->
                                 <div class="footer-menu-group">
                                     <h4 class="footer-menu-title">예약안내</h4>
                                     <div class="footer-menu-items">
@@ -46,30 +46,36 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- 오른쪽: 숙소 정보 -->
+                            <!-- 숙소 사업자 정보 : property.businessInfo 매핑 -->
                             <div class="footer-info-section">
                                 <div class="footer-business-info">
-                                    <span>제주특별자치도 제주시 해안로 123</span>
-                                    <span>사업자등록번호: 123-45-67890</span>
-                                    <span>통신판매업신고: 제2024-제주-0001호</span>
+                                    <!-- property.address 매핑 -->
+                                    <span data-footer-address></span>
+                                    <!-- property.businessInfo.businessNumber 매핑 -->
+                                    <span data-footer-business-number></span>
+                                    <!-- property.businessInfo.eCommerceRegistrationNumber 매핑 -->
+                                    <span data-footer-ecommerce></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="footer-right-section">
+                        <!-- 로고 : homepage.images[].logo[] 매핑 -->
                         <div class="footer-logo">
-                            <img data-footer-logo src="images/logo.png" alt="로고" class="footer-logo-img">
+                            <img data-footer-logo src="" alt="" class="footer-logo-img">
                         </div>
+                        <!-- 전화번호 : property.contactPhone 매핑 -->
                         <div class="footer-phone">
-                            <span class="footer-phone-text">010-1234-5678</span>
+                            <span class="footer-phone-text" data-footer-phone></span>
                         </div>
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    
+
                 </div>
+                <!-- 저작권 : property.businessInfo.businessName + 현재년도 매핑 -->
                 <div class="footer-copyright">
-                    <p>© 2024 All rights reserved.</p>
+                    <p data-footer-copyright></p>
                 </div>
             </div>
         </div>
@@ -86,6 +92,7 @@
             </svg>
             <span>예약하기</span>
         </button>
+        <!-- YBS 예약 버튼 : property.ybsUrl 매핑 -->
         <button class="floating-btn ybs-btn" data-ybs-booking aria-label="YBS 예약">
             <svg class="booking-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>

@@ -3,19 +3,29 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize hero slider
-    initHeroSlider();
+    // Hero Slider는 FacilityMapper에서 데이터 매핑 후 초기화됨
+    // (슬라이드가 동적으로 생성되므로 여기서 호출하면 빈 슬라이더)
 
-    // Initialize marquee
-    initMarquee();
+    // Initialize animations (정적 요소들에 대해)
+    window.initFacilityAnimations();
 });
+
+// 전역 변수로 interval 관리 (중복 호출 방지)
+window._facilityHeroSliderInterval = null;
 
 /**
  * Initialize Hero Slider
+ * window에 노출하여 mapper에서 재초기화 가능
  */
-function initHeroSlider() {
+window.initFacilityHeroSlider = function initHeroSlider() {
     const slider = document.querySelector('[data-hero-slider]');
     if (!slider) return;
+
+    // 기존 interval 클리어 (중복 호출 방지)
+    if (window._facilityHeroSliderInterval) {
+        clearInterval(window._facilityHeroSliderInterval);
+        window._facilityHeroSliderInterval = null;
+    }
 
     const slides = slider.querySelectorAll('.hero-slide');
     const currentSlideEl = document.querySelector('[data-current-slide]');
@@ -27,6 +37,20 @@ function initHeroSlider() {
     let currentSlide = 0;
     const totalSlides = slides.length;
     const slideInterval = 5000; // 5 seconds per slide
+
+    // 슬라이드가 1개 이하면 자동 재생 불필요
+    if (totalSlides <= 1) {
+        if (totalSlidesEl) {
+            totalSlidesEl.textContent = totalSlides.toString().padStart(2, '0');
+        }
+        if (currentSlideEl) {
+            currentSlideEl.textContent = '01';
+        }
+        return;
+    }
+
+    // Auto-play slider (전역 변수 사용)
+    let isTransitioning = false;
 
     // Update total slides count
     if (totalSlidesEl) {
@@ -78,13 +102,9 @@ function initHeroSlider() {
         showSlide(currentSlide);
     }
 
-    // Auto-play slider
-    let autoPlayInterval;
-    let isTransitioning = false;
-
     // Start auto-play
     function startAutoPlay() {
-        autoPlayInterval = setInterval(() => {
+        window._facilityHeroSliderInterval = setInterval(() => {
             if (!isTransitioning) {
                 nextSlide();
             }
@@ -93,7 +113,7 @@ function initHeroSlider() {
 
     // Function to reset auto-play
     function resetAutoPlay() {
-        clearInterval(autoPlayInterval);
+        clearInterval(window._facilityHeroSliderInterval);
         startAutoPlay();
     }
 
@@ -102,7 +122,7 @@ function initHeroSlider() {
         nextBtn.addEventListener('click', () => {
             if (!isTransitioning) {
                 isTransitioning = true;
-                clearInterval(autoPlayInterval);
+                clearInterval(window._facilityHeroSliderInterval);
                 nextSlide();
                 setTimeout(() => {
                     isTransitioning = false;
@@ -116,7 +136,7 @@ function initHeroSlider() {
         prevBtn.addEventListener('click', () => {
             if (!isTransitioning) {
                 isTransitioning = true;
-                clearInterval(autoPlayInterval);
+                clearInterval(window._facilityHeroSliderInterval);
                 prevSlide();
                 setTimeout(() => {
                     isTransitioning = false;
@@ -128,7 +148,7 @@ function initHeroSlider() {
 
     // Pause on hover
     slider.addEventListener('mouseenter', () => {
-        clearInterval(autoPlayInterval);
+        clearInterval(window._facilityHeroSliderInterval);
     });
 
     slider.addEventListener('mouseleave', () => {
@@ -143,23 +163,26 @@ function initHeroSlider() {
 }
 
 /**
- * Initialize marquee animation
+ * Initialize animations
+ * window에 노출하여 mapper에서 재초기화 가능
  */
-function initMarquee() {
-    const marqueeEl = document.querySelector('[data-marquee-propery-name]');
-    if (!marqueeEl) return;
+window.initFacilityAnimations = function initAnimations() {
+    const animatedElements = document.querySelectorAll('.animate-element:not(.animate)');
 
-    const text = "POOLVILLA GLAMPING";
-    const repeatCount = 10;
+    if (!animatedElements.length) return;
 
-    // Create repeated text
-    let content = '';
-    for (let i = 0; i < repeatCount; i++) {
-        content += `<span>${text}</span>`;
-    }
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    });
 
-    marqueeEl.innerHTML = content;
-
-    // Add animation class
-    marqueeEl.classList.add('marquee-animated');
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
 }

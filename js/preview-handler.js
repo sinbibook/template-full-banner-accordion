@@ -405,11 +405,19 @@ class PreviewHandler {
         const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
         let newPath = `${basePath}${targetPage}`;
 
+        // 현재 URL의 preview 파라미터 확인
+        const currentParams = new URLSearchParams(window.location.search);
+        const isPreview = currentParams.get('preview');
+
         // room 또는 facility 페이지인 경우 id 쿼리 파라미터 추가
         if (messageData.page === 'room' && messageData.roomId) {
             newPath += `?id=${encodeURIComponent(messageData.roomId)}`;
+            if (isPreview) newPath += `&preview=${isPreview}`;
         } else if (messageData.page === 'facility' && messageData.facilityId) {
             newPath += `?id=${encodeURIComponent(messageData.facilityId)}`;
+            if (isPreview) newPath += `&preview=${isPreview}`;
+        } else if (isPreview) {
+            newPath += `?preview=${isPreview}`;
         }
 
         window.location.href = newPath;
@@ -700,14 +708,14 @@ class PreviewHandler {
                         mapper.mapBasicInfo();
                         break;
                     case 'gallery':
-                        mapper.mapExteriorGallery();
+                        mapper.mapGallerySection();
                         break;
                 }
             }
         } else if (page === 'facility') {
             if (window.FacilityMapper) {
                 const mapper = this.createMapper(FacilityMapper);
-                mapper.mapFacilityBasicInfo();
+                mapper.mapBasicInfo();
             }
         } else if (page === 'reservation') {
             if (window.ReservationMapper) {

@@ -3,11 +3,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Hero Slider Initialization
-    initHeroSlider();
+    // Hero Slider는 MainMapper에서 데이터 매핑 후 초기화됨
+    // (슬라이드가 동적으로 생성되므로 여기서 호출하면 빈 슬라이더)
 
-    // Scroll animations
-    initScrollAnimations();
+    // Scroll animations (정적 요소들에 대해)
+    window.initScrollAnimations();
 
     // Marquee animation
     initMarquee();
@@ -15,10 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * Initialize Hero Slider
+ * window에 노출하여 mapper에서 재초기화 가능
  */
-function initHeroSlider() {
+// 전역 변수로 interval 관리 (중복 호출 방지)
+window._heroSliderInterval = null;
+
+window.initHeroSlider = function initHeroSlider() {
     const slider = document.querySelector('[data-hero-slider]');
     if (!slider) return;
+
+    // 기존 interval 클리어 (중복 호출 방지)
+    if (window._heroSliderInterval) {
+        clearInterval(window._heroSliderInterval);
+        window._heroSliderInterval = null;
+    }
 
     const slides = slider.querySelectorAll('.hero-slide');
     const currentSlideEl = document.querySelector('[data-current-slide]');
@@ -30,6 +40,17 @@ function initHeroSlider() {
     let currentSlide = 0;
     const totalSlides = slides.length;
     const slideInterval = 5000; // 5 seconds per slide
+
+    // 슬라이드가 1개 이하면 자동 재생 불필요
+    if (totalSlides <= 1) {
+        if (totalSlidesEl) {
+            totalSlidesEl.textContent = totalSlides.toString().padStart(2, '0');
+        }
+        if (currentSlideEl) {
+            currentSlideEl.textContent = '01';
+        }
+        return;
+    }
 
     // Update total slides count
     if (totalSlidesEl) {
@@ -81,13 +102,12 @@ function initHeroSlider() {
         showSlide(currentSlide);
     }
 
-    // Auto-play slider
-    let autoPlayInterval;
+    // Auto-play slider (전역 변수 사용)
     let isTransitioning = false;
 
     // Start auto-play
     function startAutoPlay() {
-        autoPlayInterval = setInterval(() => {
+        window._heroSliderInterval = setInterval(() => {
             if (!isTransitioning) {
                 nextSlide();
             }
@@ -96,7 +116,7 @@ function initHeroSlider() {
 
     // Function to reset auto-play
     function resetAutoPlay() {
-        clearInterval(autoPlayInterval);
+        clearInterval(window._heroSliderInterval);
         startAutoPlay();
     }
 
@@ -105,7 +125,7 @@ function initHeroSlider() {
         nextBtn.addEventListener('click', () => {
             if (!isTransitioning) {
                 isTransitioning = true;
-                clearInterval(autoPlayInterval);
+                clearInterval(window._heroSliderInterval);
                 nextSlide();
                 setTimeout(() => {
                     isTransitioning = false;
@@ -119,7 +139,7 @@ function initHeroSlider() {
         prevBtn.addEventListener('click', () => {
             if (!isTransitioning) {
                 isTransitioning = true;
-                clearInterval(autoPlayInterval);
+                clearInterval(window._heroSliderInterval);
                 prevSlide();
                 setTimeout(() => {
                     isTransitioning = false;
@@ -131,7 +151,7 @@ function initHeroSlider() {
 
     // Pause on hover
     slider.addEventListener('mouseenter', () => {
-        clearInterval(autoPlayInterval);
+        clearInterval(window._heroSliderInterval);
     });
 
     slider.addEventListener('mouseleave', () => {
@@ -147,16 +167,17 @@ function initHeroSlider() {
 
 /**
  * Initialize scroll animations
+ * window에 노출하여 동적 콘텐츠 생성 후 재초기화 가능
  */
-function initScrollAnimations() {
-    const animatedElements = document.querySelectorAll('.animate-element');
+window.initScrollAnimations = function initScrollAnimations() {
+    const animatedElements = document.querySelectorAll('.animate-element:not(.animate)');
 
     if (!animatedElements.length) return;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
+                entry.target.classList.add('animate');
             }
         });
     }, {
@@ -211,7 +232,7 @@ function initScrollAnimations() {
  * Initialize marquee animation
  */
 function initMarquee() {
-    const marqueeEl = document.querySelector('[data-marquee-propery-name]');
+    const marqueeEl = document.querySelector('[data-marquee-property-name]');
     if (!marqueeEl) return;
 
     const text = "POOLVILLA GLAMPING";

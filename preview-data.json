@@ -110,6 +110,12 @@
             "sortOrder": 4,
             "description": "수영장 라운지",
             "isSelected": true
+          },
+          {
+            "url": "./images/exterior.jpg",
+            "sortOrder": 5,
+            "description": "시설 외관",
+            "isSelected": true
           }
         ]
       }
@@ -233,7 +239,42 @@
               "id": "room-001-interior-001",
               "url": "./images/room2.jpg",
               "sortOrder": 0,
-              "description": "오션뷰 디럭스 실내",
+              "description": "오션뷰 디럭스 실내 1",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-interior-002",
+              "url": "./images/room4.jpg",
+              "sortOrder": 1,
+              "description": "오션뷰 디럭스 실내 2",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-interior-003",
+              "url": "./images/room.jpg",
+              "sortOrder": 2,
+              "description": "오션뷰 디럭스 실내 3",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-interior-004",
+              "url": "./images/room3.jpg",
+              "sortOrder": 3,
+              "description": "오션뷰 디럭스 실내 4",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-interior-005",
+              "url": "./images/room5.jpg",
+              "sortOrder": 4,
+              "description": "오션뷰 디럭스 실내 5",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-interior-006",
+              "url": "./images/room6.jpg",
+              "sortOrder": 5,
+              "description": "오션뷰 디럭스 실내 6",
               "isSelected": true
             }
           ],
@@ -242,7 +283,28 @@
               "id": "room-001-exterior-001",
               "url": "./images/exterior2.jpg",
               "sortOrder": 0,
-              "description": "오션뷰 디럭스 외경",
+              "description": "오션뷰 디럭스 외경 1",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-exterior-002",
+              "url": "./images/exterior3.jpg",
+              "sortOrder": 1,
+              "description": "오션뷰 디럭스 외경 2",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-exterior-003",
+              "url": "./images/exterior4.jpg",
+              "sortOrder": 2,
+              "description": "오션뷰 디럭스 외경 3",
+              "isSelected": true
+            },
+            {
+              "id": "room-001-exterior-004",
+              "url": "./images/exterior5.jpg",
+              "sortOrder": 3,
+              "description": "오션뷰 디럭스 외경 4",
               "isSelected": true
             }
           ]
@@ -297,17 +359,74 @@
           "interior": [
             {
               "id": "room-002-interior-001",
-              "url": "./images/room4.jpg",
+              "url": "./images/room6.jpg",
               "sortOrder": 0,
-              "description": "스위트룸 실내",
+              "description": "스위트룸 실내 1",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-interior-002",
+              "url": "./images/room5.jpg",
+              "sortOrder": 1,
+              "description": "스위트룸 실내 2",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-interior-003",
+              "url": "./images/room3.jpg",
+              "sortOrder": 2,
+              "description": "스위트룸 실내 3",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-interior-004",
+              "url": "./images/room.jpg",
+              "sortOrder": 3,
+              "description": "스위트룸 실내 4",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-interior-005",
+              "url": "./images/room4.jpg",
+              "sortOrder": 4,
+              "description": "스위트룸 실내 5",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-interior-006",
+              "url": "./images/room2.jpg",
+              "sortOrder": 5,
+              "description": "스위트룸 실내 6",
               "isSelected": true
             }
           ],
-          "exterior": [{
-              "id": "room-002-exterior-002",
-              "url": "./images/exterior3.jpg",
+          "exterior": [
+            {
+              "id": "room-002-exterior-001",
+              "url": "./images/exterior5.jpg",
               "sortOrder": 0,
-              "description": "스위트룸 외경",
+              "description": "스위트룸 외경 1",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-exterior-002",
+              "url": "./images/exterior4.jpg",
+              "sortOrder": 1,
+              "description": "스위트룸 외경 2",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-exterior-003",
+              "url": "./images/exterior3.jpg",
+              "sortOrder": 2,
+              "description": "스위트룸 외경 3",
+              "isSelected": true
+            },
+            {
+              "id": "room-002-exterior-004",
+              "url": "./images/exterior2.jpg",
+              "sortOrder": 3,
+              "description": "스위트룸 외경 4",
               "isSelected": true
             }
           ]
@@ -368,7 +487,7 @@
                 "description": "머무는 내내 즐거움으로 가득한 추억이 되도록."
               },
               "essence": {
-                "title": "A place where there is no noise",
+                "title": "진정한 휴식이 있는 곳",
                 "images": [
                   {
                     "id": "essence-img-001",
@@ -376,40 +495,12 @@
                     "sortOrder": 0,
                     "description": "풀빌라 수영장 1",
                     "isSelected": true
-                  },
-                  {
-                    "id": "essence-img-002",
-                    "url": "./images/pool2.jpg",
-                    "sortOrder": 1,
-                    "description": "풀빌라 수영장 2",
-                    "isSelected": true
-                  },
-                  {
-                    "id": "essence-img-003",
-                    "url": "./images/pool3.jpg",
-                    "sortOrder": 2,
-                    "description": "풀빌라 수영장 3",
-                    "isSelected": true
-                  },
-                  {
-                    "id": "essence-img-004",
-                    "url": "./images/pool4.jpg",
-                    "sortOrder": 3,
-                    "description": "풀빌라 수영장 4",
-                    "isSelected": true
-                  },
-                  {
-                    "id": "essence-img-005",
-                    "url": "./images/pool5.jpg",
-                    "sortOrder": 4,
-                    "description": "풀빌라 수영장 5",
-                    "isSelected": true
                   }
                 ],
-                "description": "지친 일상의 유일한 휴식처, \n 영덕 더베스트 풀빌라에 오신 것을 환영합니다."
+                "description": "도시의 소음에서 벗어나 자연과 함꼐하는 완벽한 휴식.\n 프라이빗한 공간에서 특별한 시간을 만나보세요."
               },
               "gallery": {
-                "title": "A place where there is no noise",
+                "title": "특별한 순간들",
                 "images": [
                   {
                     "id": "gallery-img-001",
@@ -447,54 +538,47 @@
                     "isSelected": true
                   }
                 ],
-                "description": "아름다운 바다 전망과 편안한 시설들을 미리 만나보세요."
+                "description": "당신의 특별한 순간을 이곳에서 담아보세요."
               },
               "signature": {
-                "title": "특별한 순간들",
+                "title": "풀빌라와 글램핑의 특별한 경험",
                 "images": [
                   {
                     "id": "signature-img-001",
-                    "url": "./images/exterior4.jpg",
+                    "url": "./images/room.jpg",
                     "sortOrder": 0,
-                    "description": "외관 이미지 4",
+                    "description": "객실 이미지 1",
                     "isSelected": true
                   },
                   {
                     "id": "signature-img-002",
-                    "url": "./images/exterior5.jpg",
+                    "url": "./images/room2.jpg",
                     "sortOrder": 1,
-                    "description": "외관 이미지 5",
+                    "description": "객실 이미지 2",
                     "isSelected": true
                   },
                   {
                     "id": "signature-img-003",
-                    "url": "./images/pool4.jpg",
+                    "url": "./images/room3.jpg",
                     "sortOrder": 2,
-                    "description": "수영장 이미지 4",
-                    "isSelected": true
-                  },
-                  {
-                    "id": "signature-img-004",
-                    "url": "./images/pool5.jpg",
-                    "sortOrder": 3,
-                    "description": "수영장 이미지 5",
+                    "description": "객실 이미지 3",
                     "isSelected": true
                   }
                 ],
-                "description": "오션뷰 펜션에서만 경험할 수 있는 특별함을 느껴보세요. 바다가 선사하는 감동과 함께 잊지 못할 추억을 만들어드립니다."
+                "description": "전 객실 개별 실내수영장 및 야외 자쿠지가 포함되어 있습니다."
               },
               "closing": {
                 "title": "POOLVILLA AND GLAMPING",
                 "images": [
                   {
                     "id": "closing-img-001",
-                    "url": "./images/shadow.jpg",
+                    "url": "./images/exterior2.jpg",
                     "sortOrder": 0,
-                    "description": "그림자 이미지",
+                    "description": "외경 이미지",
                     "isSelected": true
                   }
                 ],
-                "description": "바다가 품어주는 평온함 속에서 특별한 하루를 마무리하세요."
+                "description": "당신의 하루를 특별하게 마무리 하도록."
               }
             }
           ]
@@ -503,7 +587,7 @@
           "sections": [
             {
               "hero": {
-                "title": "찾아오시는 길",
+                "title": "오시는 길",
                 "images": [
                   {
                     "id": "directions-hero-001",
@@ -525,68 +609,74 @@
           "sections": [
             {
               "hero": {
-                "title": "특별하게 기억될 수 있는 그곳,",
+                "title": "",
                 "images": [
                   {
                     "id": "main-hero-001",
-                    "url": "./images/hero4.jpg",
+                    "url": "./images/exterior3.jpg",
                     "sortOrder": 1,
                     "description": "메인 히어로 이미지 1",
                     "isSelected": true
                   },
                   {
                     "id": "main-hero-002",
-                    "url": "./images/hero5.jpg",
+                    "url": "./images/exterior4.jpg",
                     "sortOrder": 2,
                     "description": "메인 히어로 이미지 2",
                     "isSelected": true
-                  },
-                  {
-                    "id": "main-hero-003",
-                    "url": "./images/exterior6.jpg",
-                    "sortOrder": 3,
-                    "description": "메인 히어로 이미지 3",
-                    "isSelected": true
                   }
                 ],
-                "description": "푸른 동해바다를 마주보며 여유로운 시간을 즐기는 더 베스트 풀빌라\n 편안한 휴식과 특별한 추억을 만들어보세요."
+                "description": ""
               },
               "about": [
                 {
-                  "title": "자연과 함께하는 휴식",
+                  "title": "눈부신 일출 명소 영덕에서",
                   "images": [
                     {
                       "id": "about-001",
-                      "url": "./images/room.jpg",
+                      "url": "",
                       "sortOrder": 0,
-                      "description": "자연과 함께하는 휴식",
-                      "isSelected": true
+                      "description": "",
+                      "isSelected": false
                     }
                   ],
-                  "description": "탁 트인 바다 전망과 함께 일상에서 벗어나 진정한 휴식을 경험하세요. 프라이빗한 공간에서 소중한 사람들과 특별한 추억을 만들어보세요."
+                  "description": "머무는 내내 즐거움으로 가득한 추억이 되도록."
                 },
                 {
-                  "title": "럭셔리한 프라이빗 공간",
-                  "description": "넓은 테라스와 프라이빗 풀을 갖춘 독립적인 공간에서 오직 당신만을 위한 특별한 시간을 보내세요. 최고급 시설과 서비스로 완벽한 휴양을 경험하실 수 있습니다.",
+                  "title": "특별한 휴식",
+                  "description": "자연과 함께하는 프라이빗한 공간에서 진정한 휴식을 경험하세요.",
                   "images": [
                     {
                       "id": "about-002",
-                      "url": "./images/room2.jpg",
+                      "url": "./images/pool.jpg",
                       "sortOrder": 0,
-                      "description": "럭셔리한 프라이빗 공간",
+                      "description": "",
                       "isSelected": true
                     }
                   ]
                 },
                 {
-                  "title": "편안한 휴식과 힐링",
-                  "description": "도시의 소음에서 벗어나 자연 속에서 진정한 휴식을 취해보세요. 조용하고 평화로운 분위기 속에서 몸과 마음을 재충전할 수 있는 완벽한 공간입니다.",
+                  "title": "프라이빗 공간",
+                  "description": "오직 당신만을 위한 특별한 시간과 공간을 제공합니다.",
                   "images": [
                     {
                       "id": "about-003",
-                      "url": "./images/exterior.jpg",
+                      "url": "./images/breakfast.jpg",
                       "sortOrder": 0,
-                      "description": "편안한 휴식과 힐링",
+                      "description": "",
+                      "isSelected": true
+                    }
+                  ]
+                },
+                {
+                  "title": "특별한 경험",
+                  "description": "잊지 못할 순간들로 가득한 완벽한 휴가를 만들어 드립니다.",
+                  "images": [
+                    {
+                      "id": "about-003",
+                      "url": "./images/bbq.jpg",
+                      "sortOrder": 0,
+                      "description": "",
                       "isSelected": true
                     }
                   ]
@@ -601,12 +691,41 @@
             "sections": [
               {
                 "hero": {
-                  "title": "바다를 한눈에 담을 수 있는 넓은 창문과 프라이빗 테라스가 있는 객실입니다.",
+                  "title": "",
                   "images": []
                 },
                 "gallery": {
-                  "title": "특별하게 기억될 수 있는 그곳,",
-                  "images": []
+                  "title": "당신의 하루가 고요하도록.",
+                  "images": [
+                    {
+                      "id": "gallery-img-001",
+                      "url": "./images/room.jpg",
+                      "sortOrder": 0,
+                      "description": "",
+                      "isSelected": true
+                    },
+                     {
+                      "id": "gallery-img-002",
+                      "url": "./images/room2.jpg",
+                      "sortOrder": 0,
+                      "description": "",
+                      "isSelected": true
+                    },
+                     {
+                      "id": "gallery-img-003",
+                      "url": "./images/room3.jpg",
+                      "sortOrder": 0,
+                      "description": "",
+                      "isSelected": true
+                    },
+                     {
+                      "id": "gallery-img-004",
+                      "url": "./images/room4.jpg",
+                      "sortOrder": 0,
+                      "description": "",
+                      "isSelected": true
+                    }
+                  ]
                 }
               }
             ]
@@ -618,11 +737,11 @@
             "sections": [
               {
                 "hero": {
-                  "title": "시설 히어로 타이틀",
+                  "title": "프라이빗 수영장과 바베큐 시설을 갖춘 럭셔리 글램핑",
                   "images": []
                 },
                 "about": {
-                  "title": "시설 소개 타이틀",
+                  "title": "개별 수영장",
                   "images": []
                 },
                 "experience": {
@@ -677,8 +796,8 @@
           "sections": [
             {
               "hero": {
-                "title": "예약안내 히어로 타이틀",
-                "description": "예약안내 히어로 설명",
+                "title": "",
+                "description": "",
                 "images": [
                   {
                     "id": "reservation-001",
@@ -686,12 +805,19 @@
                     "sortOrder": 0,
                     "description": "",
                     "isSelected": true
+                  },
+                  {
+                    "id": "reservation-002",
+                    "url": "./images/exterior5.jpg",
+                    "sortOrder": 0,
+                    "description": "",
+                    "isSelected": true
                   }
                 ]
               },
               "about": {
-                "title": "예약안내",
-                "description": "더 베스트 풀빌라 예약안내 입니다.",
+                "title": "",
+                "description": "",
                 "images": []
               }
             }

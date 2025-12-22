@@ -141,7 +141,7 @@
     transition: all 1s ease;
 }
 
-.room-thumbnail.animated {
+.room-thumbnail.animate {
     opacity: 1;
     transform: translateY(0);
 }
@@ -211,7 +211,7 @@
     transition: all 1s ease;
 }
 
-.room-number.animated {
+.room-number.animate {
     opacity: 1;
     transform: translateY(0);
 }
@@ -229,7 +229,7 @@
     transition-delay: 0.2s;
 }
 
-.room-description.animated {
+.room-description.animate {
     opacity: 1;
     transform: translateY(0);
 }
@@ -242,7 +242,7 @@
     transition: all 0.6s ease;
 }
 
-.room-details-container.animated {
+.room-details-container.animate {
     opacity: 1;
     transform: translateY(0);
 }
@@ -386,7 +386,7 @@
     transition-delay: 0.3s;
 }
 
-.room-usage-guide-section.animated {
+.room-usage-guide-section.animate {
     opacity: 1;
     transform: translateY(0);
 }
@@ -416,7 +416,7 @@
     transition-delay: 0.2s;
 }
 
-.room-amenities-section.animated {
+.room-amenities-section.animate {
     opacity: 1;
     transform: translateY(0);
 }
@@ -459,7 +459,7 @@
     transition: all 0.6s ease;
 }
 
-.animate-element.animated {
+.animate-element.animate {
     opacity: 1;
     transform: translateY(0);
 }
