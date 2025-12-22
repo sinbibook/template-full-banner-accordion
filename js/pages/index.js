@@ -143,6 +143,14 @@ class GallerySlider {
         this.intervalId = null;
         this.isPaused = false;
         this.slideDuration = 3000; // 3초마다 슬라이드
+
+        // 상수 정의 (매직 넘버 제거)
+        this.PREPEND_BUFFER_COUNT = 3; // 앞쪽 버퍼 슬라이드 개수
+        this.APPEND_CLONE_SETS = 5;    // 뒤쪽 복제 세트 수
+        this.SLIDE_GAP = 30;           // 슬라이드 간 간격 (px)
+        this.RESET_THRESHOLD = 5;      // 리셋 임계값 (끝에서 몇 개 남았을 때)
+        this.INITIAL_DELAY = 2000;     // 초기 자동 슬라이드 지연 시간 (ms)
+
         this.images = [
             { src: './images/bbq.jpg', description: 'BBQ' },
             { src: './images/breakfast.jpg', description: '조식' },
@@ -194,20 +202,20 @@ class GallerySlider {
         const originalSlides = Array.from(this.slider.children);
 
         // 앞쪽에 마지막 몇 개 추가 (시작 부분 버퍼)
-        const lastFewSlides = originalSlides.slice(-3);
+        const lastFewSlides = originalSlides.slice(-this.PREPEND_BUFFER_COUNT);
         lastFewSlides.reverse().forEach(slide => {
             this.slider.insertBefore(slide.cloneNode(true), this.slider.firstChild);
         });
 
-        // 뒤쪽에 여러 세트 복제 (5세트 추가)
-        for (let i = 0; i < 5; i++) {
+        // 뒤쪽에 여러 세트 복제
+        for (let i = 0; i < this.APPEND_CLONE_SETS; i++) {
             originalSlides.forEach(slide => {
                 this.slider.appendChild(slide.cloneNode(true));
             });
         }
 
         // 시작 위치를 첫 번째 원본 세트로 설정 (앞쪽 버퍼 고려)
-        this.index = 3; // 버퍼 3개만큼 시작점 조정
+        this.index = this.PREPEND_BUFFER_COUNT; // 버퍼만큼 시작점 조정
 
         // 슬라이드 시작
         this.startSlider();
@@ -288,7 +296,7 @@ class GallerySlider {
         // 슬라이더 초기 위치 설정 (버퍼 고려)
         const firstItem = this.slider.querySelector('.gallery-item');
         if (firstItem) {
-            const itemWidth = firstItem.offsetWidth + 30;
+            const itemWidth = firstItem.offsetWidth + this.SLIDE_GAP;
             this.slider.style.transform = `translateX(-${this.index * itemWidth}px)`;
         }
 
@@ -308,7 +316,7 @@ class GallerySlider {
                     this.move();
                 }
             }, this.slideDuration);
-        }, 2000);
+        }, this.INITIAL_DELAY);
     }
 
     move() {
@@ -316,16 +324,16 @@ class GallerySlider {
         const firstItem = this.slider.querySelector('.gallery-item');
         if (!firstItem) return;
 
-        const itemWidth = firstItem.offsetWidth + 30; // gap 포함
+        const itemWidth = firstItem.offsetWidth + this.SLIDE_GAP; // gap 포함
 
         // 총 슬라이드 수 계산 (원본 + 복제본들)
         const totalSlides = this.slider.children.length;
 
         // 끝에서 몇 개 남았을 때 미리 리셋 (자연스러운 무한 루프)
-        if (this.index >= totalSlides - this.slideCount - 5) {
+        if (this.index >= totalSlides - this.slideCount - this.RESET_THRESHOLD) {
             // 즉시 리셋 (애니메이션 없이)
             this.slider.style.transition = 'none';
-            this.index = 3 + this.slideCount; // 첫 번째 복제 세트 시작점으로
+            this.index = this.PREPEND_BUFFER_COUNT + this.slideCount; // 첫 번째 복제 세트 시작점으로
             this.slider.style.transform = `translateX(-${this.index * itemWidth}px)`;
 
             // 리플로우 후 애니메이션 재적용
@@ -612,7 +620,7 @@ class FullpageScroll {
         // 현재 스크롤 위치에 따라 활성 섹션 결정
         const scrollPosition = window.scrollY + window.innerHeight / 2;
 
-        this.sections.forEach((section, index) => {
+        for (const [index, section] of this.sections.entries()) {
             const sectionTop = section.offsetTop;
             const sectionBottom = sectionTop + section.offsetHeight;
 
@@ -635,7 +643,7 @@ class FullpageScroll {
                 this.updateNavigation();
                 return;
             }
-        });
+        }
     }
 }
 
