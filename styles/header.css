@@ -78,7 +78,7 @@ body.menu-open .menu-toggle .menu-text {
 }
 
 body.menu-open .menu-toggle {
-    background: transparent;
+    background: var(--color-secondary);
     border-color: var(--color-primary);
 }
 
