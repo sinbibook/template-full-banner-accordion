@@ -89,11 +89,14 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
 
 .hero-slide.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
 }
 
 .hero-slide img {
@@ -101,20 +104,7 @@ img {
     height: 100%;
     object-fit: cover;
     transform: scale(1);
-}
-
-/* Apply zoom animation to active slide */
-.hero-slide.active img {
-    animation: heroZoomIn 6s ease-out forwards;
-}
-
-@keyframes heroZoomIn {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.12);
-    }
+    transition: transform 3s ease-out;
 }
 
 /* Hero Overlay */

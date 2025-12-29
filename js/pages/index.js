@@ -5,7 +5,7 @@ class HeroSlider {
     constructor() {
         this.currentSlide = 0;
         this.totalSlides = 0;
-        this.slideDuration = 7000; // 7초
+        this.slideDuration = 4000; // 4초
         this.slides = [];
         this.progressFill = null;
         this.sliderContainer = null;
