@@ -175,8 +175,8 @@ window.initRoomDetailSlider = function initRoomDetailSlider() {
     if (!sliderContainer) return;
 
     const slides = Array.from(sliderContainer.querySelectorAll('.detail-slide'));
-    const indicators = Array.from(document.querySelectorAll('.detail-indicator'));
-    const thumbs = Array.from(document.querySelectorAll('.detail-thumb'));
+    const indicators = Array.from(sliderContainer.querySelectorAll('.detail-indicator'));
+    const thumbs = Array.from(sliderContainer.querySelectorAll('.detail-thumb'));
 
     if (slides.length === 0) return;
 
@@ -204,44 +204,49 @@ window.initRoomDetailSlider = function initRoomDetailSlider() {
         showSlide(currentSlide);
     }
 
+    // 자동 재생 리셋 헬퍼 함수
+    function resetAutoPlay() {
+        if (window._roomDetailSliderInterval) {
+            clearInterval(window._roomDetailSliderInterval);
+        }
+        window._roomDetailSliderInterval = setInterval(nextSlide, slideInterval);
+    }
+
     // 초기 설정
     showSlide(0);
 
-    // 자동 재생
-    if (window._roomDetailSliderInterval) {
-        clearInterval(window._roomDetailSliderInterval);
-    }
-
-    window._roomDetailSliderInterval = setInterval(nextSlide, slideInterval);
+    // 자동 재생 시작
+    resetAutoPlay();
 
     // 인디케이터 클릭
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
-            clearInterval(window._roomDetailSliderInterval);
             currentSlide = index;
             showSlide(currentSlide);
-            window._roomDetailSliderInterval = setInterval(nextSlide, slideInterval);
+            resetAutoPlay();
         });
     });
 
     // 썸네일 클릭
     thumbs.forEach((thumb, index) => {
         thumb.addEventListener('click', () => {
-            clearInterval(window._roomDetailSliderInterval);
             currentSlide = index;
             showSlide(currentSlide);
-            window._roomDetailSliderInterval = setInterval(nextSlide, slideInterval);
+            resetAutoPlay();
         });
     });
 
     // 호버 시 일시정지
     if (sliderContainer) {
         sliderContainer.addEventListener('mouseenter', () => {
-            clearInterval(window._roomDetailSliderInterval);
+            if (window._roomDetailSliderInterval) {
+                clearInterval(window._roomDetailSliderInterval);
+                window._roomDetailSliderInterval = null;
+            }
         });
 
         sliderContainer.addEventListener('mouseleave', () => {
-            window._roomDetailSliderInterval = setInterval(nextSlide, slideInterval);
+            resetAutoPlay();
         });
     }
 };
