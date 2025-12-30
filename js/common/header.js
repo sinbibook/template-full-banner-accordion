@@ -64,7 +64,7 @@
     window.toggleSideHeader = window.toggleMenuOverlay;
 
     // Navigation function
-    window.navigateTo = function(page) {
+    window.navigateTo = function(page, id = null) {
         // Close menu overlay if open
         const menuOverlay = document.getElementById('menu-overlay');
         if (menuOverlay && menuOverlay.classList.contains('active')) {
@@ -99,13 +99,24 @@
                 url = page + '.html';
         }
 
-        // Navigate to URL (preserve preview query string)
+        // Navigate to URL (preserve preview query string and add id if provided)
         if (url) {
             const currentParams = new URLSearchParams(window.location.search);
             const isPreview = currentParams.get('preview');
-            if (isPreview) {
-                url += '?preview=' + isPreview;
+            const params = new URLSearchParams();
+
+            if (id) {
+                params.set('id', id);
             }
+            if (isPreview) {
+                params.set('preview', isPreview);
+            }
+
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
             window.location.href = url;
         }
     };
