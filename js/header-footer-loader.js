@@ -76,6 +76,9 @@
                 // Mark header as loaded after script is fully loaded
                 headerLoaded = true;
                 tryInitializeMapper();
+
+                // Trigger scroll event to ensure scrolled class is applied
+                window.dispatchEvent(new Event('scroll'));
             };
             document.body.appendChild(script);
 
@@ -84,6 +87,7 @@
                 const header = document.querySelector('.transparent-header');
                 if (header) {
                     header.classList.add('scrolled');
+                    document.body.classList.add('scrolled');
                 }
             }
         } catch (error) {

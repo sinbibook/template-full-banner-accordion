@@ -1186,14 +1186,28 @@ body.dark-section-active.scrolled:not(.footer-visible) .scroll-to-top:hover {
 .facility-gallery-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 20px;
     position: absolute;
     bottom: -30px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;  /* room과 동일하게 컨테이너 너비 증가 */
     padding: 0 20px;
+}
+
+/* Facility Gallery Item Override - room과 동일한 스타일 */
+.facility-gallery-container .gallery-item {
+    width: 450px;  /* room과 동일한 크기 */
+    height: 450px;  /* 정사각형 */
+    max-width: none;
+    flex: 0 0 auto;
+}
+
+.facility-gallery-container .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .gallery-item {

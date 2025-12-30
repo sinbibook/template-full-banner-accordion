@@ -94,6 +94,19 @@ class FacilityMapper extends BaseDataMapper {
             img.src = image.url;
             img.alt = image.description || facility.name;
             img.loading = index === 0 ? 'eager' : 'lazy';
+
+            // 첫 번째 이미지가 로드되면 슬라이더 초기화
+            if (index === 0) {
+                img.onload = () => {
+                    // DOM 렌더링 완료를 위한 최소 지연 (슬라이더 레이아웃 계산에 필요)
+                    setTimeout(() => {
+                        if (typeof window.initFacilityHeroSlider === 'function') {
+                            window.initFacilityHeroSlider();
+                        }
+                    }, 100);
+                };
+            }
+
             slide.appendChild(img);
             sliderInner.appendChild(slide);
         });
@@ -102,11 +115,6 @@ class FacilityMapper extends BaseDataMapper {
         const totalSlidesEl = this.safeSelect('[data-total-slides]');
         if (totalSlidesEl) {
             totalSlidesEl.textContent = selectedImages.length.toString().padStart(2, '0');
-        }
-
-        // 슬라이더 재초기화
-        if (typeof window.initFacilityHeroSlider === 'function') {
-            window.initFacilityHeroSlider();
         }
     }
 
@@ -354,18 +362,22 @@ class FacilityMapper extends BaseDataMapper {
         const galleryContainer = this.safeSelect('[data-facility-gallery]');
         if (!galleryContainer) return;
 
+        // 갤러리 상수 정의
+        const HERO_IMAGES_COUNT = 2; // Hero/Thumbnail에서 사용하는 이미지 수
+        const GALLERY_IMAGES_COUNT = 3; // 갤러리에 표시할 이미지 수
+
         // ImageHelpers로 선택된 이미지 가져오기
         const selectedImages = ImageHelpers.getSelectedImages(facility.images);
 
         // 갤러리 컨테이너 초기화
         galleryContainer.innerHTML = '';
 
-        // 갤러리용 이미지 (2번째 인덱스부터 4장, Hero/Thumbnail/Main에서 사용하므로)
-        const galleryImages = selectedImages.slice(2, 6);
+        // 갤러리용 이미지 (Hero/Thumbnail 이후 이미지들)
+        const galleryImages = selectedImages.slice(HERO_IMAGES_COUNT, HERO_IMAGES_COUNT + GALLERY_IMAGES_COUNT);
 
         if (galleryImages.length === 0) {
-            // 이미지가 없으면 placeholder 4개 생성
-            for (let i = 0; i < 4; i++) {
+            // 이미지가 없으면 placeholder로 채움
+            for (let i = 0; i < GALLERY_IMAGES_COUNT; i++) {
                 const item = this._createGalleryItem(null, facility.name);
                 galleryContainer.appendChild(item);
             }
@@ -378,8 +390,8 @@ class FacilityMapper extends BaseDataMapper {
             galleryContainer.appendChild(item);
         });
 
-        // 이미지가 4장 미만이면 placeholder로 채움
-        for (let i = galleryImages.length; i < 4; i++) {
+        // 부족한 이미지를 placeholder로 채움
+        for (let i = galleryImages.length; i < GALLERY_IMAGES_COUNT; i++) {
             const item = this._createGalleryItem(null, facility.name);
             galleryContainer.appendChild(item);
         }

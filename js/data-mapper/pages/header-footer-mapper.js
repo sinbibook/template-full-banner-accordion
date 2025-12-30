@@ -445,10 +445,22 @@ class HeaderFooterMapper extends BaseDataMapper {
             footerPhone.textContent = `${property.contactPhone}`;
         }
 
+        // 이메일 매핑
+        const emailElement = this.safeSelect('[data-footer-email]');
+        if (emailElement && property.contactEmail) {
+            emailElement.textContent = property.contactEmail;
+        }
+
         // 주소 매핑 (property.address 사용)
         const addressElement = this.safeSelect('[data-footer-address]');
         if (addressElement && property.address) {
             addressElement.textContent = property.address;
+        }
+
+        // 대표자명 매핑
+        const representativeElement = this.safeSelect('[data-footer-representative]');
+        if (representativeElement && businessInfo.representativeName) {
+            representativeElement.textContent = `대표자 : ${businessInfo.representativeName}`;
         }
 
         // 사업자번호 매핑
@@ -461,7 +473,7 @@ class HeaderFooterMapper extends BaseDataMapper {
         const ecommerceElement = this.safeSelect('[data-footer-ecommerce]');
         if (ecommerceElement) {
             if (businessInfo.eCommerceRegistrationNumber) {
-                ecommerceElement.textContent = businessInfo.eCommerceRegistrationNumber;
+                ecommerceElement.textContent = `통신판매업신고번호 : ${businessInfo.eCommerceRegistrationNumber}`;
             } else {
                 // 통신판매업신고번호가 없으면 부모 라인 전체 숨김
                 const parentLine = ecommerceElement.closest('.footer-info-line');
@@ -498,7 +510,9 @@ class HeaderFooterMapper extends BaseDataMapper {
                 emptyLink.onclick = () => navigateTo('room');
                 roomsContainer.appendChild(emptyLink);
             } else {
-                rooms.forEach((room, index) => {
+                // displayOrder로 정렬
+                const sortedRooms = [...rooms].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+                sortedRooms.forEach((room, index) => {
                     const link = document.createElement('a');
                     link.textContent = this.sanitizeText(room.name, `객실 ${index + 1}`);
                     link.href = '#';
@@ -508,10 +522,10 @@ class HeaderFooterMapper extends BaseDataMapper {
             }
         }
 
-        // 시설 메뉴 매핑
+        // 시설 메뉴 매핑 - property.facilities 경로 사용
         const facilitiesContainer = this.safeSelect('[data-footer-facilities]');
         if (facilitiesContainer) {
-            const facilities = this.data.facilities || [];
+            const facilities = this.safeGet(this.data, 'property.facilities') || [];
             facilitiesContainer.innerHTML = '';
 
             if (facilities.length === 0) {
@@ -521,7 +535,9 @@ class HeaderFooterMapper extends BaseDataMapper {
                 emptyLink.onclick = () => navigateTo('facility');
                 facilitiesContainer.appendChild(emptyLink);
             } else {
-                facilities.forEach((facility, index) => {
+                // displayOrder로 정렬
+                const sortedFacilities = [...facilities].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+                sortedFacilities.forEach((facility, index) => {
                     const link = document.createElement('a');
                     link.textContent = this.sanitizeText(facility.name, `시설 ${index + 1}`);
                     link.href = '#';
@@ -557,6 +573,57 @@ class HeaderFooterMapper extends BaseDataMapper {
     }
 
     /**
+     * Footer 소셜 링크 매핑
+     */
+    mapFooterSocialLinks() {
+        if (!this.isDataLoaded) return;
+
+        const socialLinks = this.safeGet(this.data, 'homepage.socialLinks');
+
+        // socialLinks가 빈 객체인지 체크
+        const hasAnyLink = socialLinks && Object.keys(socialLinks).length > 0;
+
+        // Facebook
+        const fbLink = this.safeSelect('[data-social-facebook]');
+        if (fbLink) {
+            if (hasAnyLink && socialLinks.facebook && socialLinks.facebook.trim() !== '') {
+                fbLink.href = socialLinks.facebook;
+                fbLink.target = '_blank';
+                fbLink.rel = 'noopener noreferrer';
+                fbLink.classList.remove('is-hidden');
+            } else {
+                fbLink.classList.add('is-hidden');
+            }
+        }
+
+        // Instagram
+        const igLink = this.safeSelect('[data-social-instagram]');
+        if (igLink) {
+            if (hasAnyLink && socialLinks.instagram && socialLinks.instagram.trim() !== '') {
+                igLink.href = socialLinks.instagram;
+                igLink.target = '_blank';
+                igLink.rel = 'noopener noreferrer';
+                igLink.classList.remove('is-hidden');
+            } else {
+                igLink.classList.add('is-hidden');
+            }
+        }
+
+        // Blog
+        const blogLink = this.safeSelect('[data-social-blog]');
+        if (blogLink) {
+            if (hasAnyLink && socialLinks.blog && socialLinks.blog.trim() !== '') {
+                blogLink.href = socialLinks.blog;
+                blogLink.target = '_blank';
+                blogLink.rel = 'noopener noreferrer';
+                blogLink.classList.remove('is-hidden');
+            } else {
+                blogLink.classList.add('is-hidden');
+            }
+        }
+    }
+
+    /**
      * Footer 전체 매핑 실행
      */
     async mapFooter() {
@@ -569,6 +636,7 @@ class HeaderFooterMapper extends BaseDataMapper {
         this.mapFooterLogo();
         this.mapFooterInfo();
         this.mapFooterMenus();
+        this.mapFooterSocialLinks();
 
         // E-commerce registration 매핑
         this.mapEcommerceRegistration();

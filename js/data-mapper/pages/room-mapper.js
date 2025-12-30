@@ -140,6 +140,18 @@ class RoomMapper extends BaseDataMapper {
             imgElement.alt = this.sanitizeText(img.description, room.name);
             imgElement.loading = index === 0 ? 'eager' : 'lazy';
 
+            // 첫 번째 이미지가 로드되면 슬라이더 초기화
+            if (index === 0) {
+                imgElement.onload = () => {
+                    // DOM 렌더링 완료를 위한 최소 지연 (슬라이더 레이아웃 계산에 필요)
+                    setTimeout(() => {
+                        if (typeof window.initRoomHeroSlider === 'function') {
+                            window.initRoomHeroSlider();
+                        }
+                    }, 100);
+                };
+            }
+
             slideDiv.appendChild(imgElement);
             sliderContainer.appendChild(slideDiv);
         });
@@ -155,9 +167,10 @@ class RoomMapper extends BaseDataMapper {
      * Hero 슬라이더 재초기화
      */
     reinitializeHeroSlider() {
-        if (typeof window.initRoomHeroSlider === 'function') {
-            window.initRoomHeroSlider();
-        }
+        // 이제 mapHeroSlider에서 직접 처리하므로 여기서는 호출하지 않음
+        // if (typeof window.initRoomHeroSlider === 'function') {
+        //     window.initRoomHeroSlider();
+        // }
     }
 
     /**
@@ -389,6 +402,25 @@ class RoomMapper extends BaseDataMapper {
     }
 
     /**
+     * Placeholder 갤러리 아이템 생성 헬퍼 메서드
+     */
+    _createPlaceholderGalleryItem() {
+        const galleryItem = document.createElement('div');
+        galleryItem.className = 'gallery-item animate-element';
+
+        const title = document.createElement('h3');
+        title.className = 'gallery-item-title';
+        title.textContent = '이미지 설명';
+
+        const img = document.createElement('img');
+        ImageHelpers.applyPlaceholder(img);
+
+        galleryItem.appendChild(title);
+        galleryItem.appendChild(img);
+        return galleryItem;
+    }
+
+    /**
      * 갤러리 섹션 매핑
      * homepage.customFields.pages.room[index].sections[0].gallery.title → [data-room-gallery-title]
      * rooms[index].images[0].exterior → [data-room-gallery]
@@ -416,28 +448,19 @@ class RoomMapper extends BaseDataMapper {
         // 기존 갤러리 제거
         galleryContainer.innerHTML = '';
 
+        const GALLERY_ITEM_COUNT = 3; // 갤러리 아이템 고정 개수
+
         if (selectedImages.length === 0) {
-            // 이미지가 없을 경우 placeholder 4개 생성
-            for (let i = 0; i < 4; i++) {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item animate-element';
-
-                const title = document.createElement('h3');
-                title.className = 'gallery-item-title';
-                title.textContent = '이미지 설명';
-
-                const img = document.createElement('img');
-                ImageHelpers.applyPlaceholder(img);
-
-                galleryItem.appendChild(title);
-                galleryItem.appendChild(img);
-                galleryContainer.appendChild(galleryItem);
+            // 이미지가 없을 경우 placeholder 3개 생성
+            for (let i = 0; i < GALLERY_ITEM_COUNT; i++) {
+                galleryContainer.appendChild(this._createPlaceholderGalleryItem());
             }
             return;
         }
 
-        // 이미지 생성
-        selectedImages.forEach((image, index) => {
+        // 이미지 생성 (최대 3개)
+        const galleryImages = selectedImages.slice(0, GALLERY_ITEM_COUNT);
+        galleryImages.forEach((image, index) => {
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item animate-element';
 
@@ -454,6 +477,11 @@ class RoomMapper extends BaseDataMapper {
             galleryItem.appendChild(img);
             galleryContainer.appendChild(galleryItem);
         });
+
+        // 3개 미만일 경우 placeholder로 채움
+        for (let i = galleryImages.length; i < GALLERY_ITEM_COUNT; i++) {
+            galleryContainer.appendChild(this._createPlaceholderGalleryItem());
+        }
     }
 
 
@@ -500,8 +528,8 @@ class RoomMapper extends BaseDataMapper {
         // E-commerce registration 매핑
         this.mapEcommerceRegistration();
 
-        // 슬라이더 재초기화 (동적 슬라이드 생성 후)
-        this.reinitializeHeroSlider();
+        // 슬라이더 재초기화는 이미지 onload에서 처리
+        // this.reinitializeHeroSlider();
 
         // 애니메이션 재초기화 (동적 요소들에 대해)
         this.reinitializeAnimations();

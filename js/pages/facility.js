@@ -8,6 +8,12 @@ window._facilityHeroSliderInterval = null;
 let isTransitioning = false;
 
 window.initFacilityHeroSlider = function initHeroSlider() {
+    // 기존 interval 정리
+    if (window._facilityHeroSliderInterval) {
+        clearInterval(window._facilityHeroSliderInterval);
+        window._facilityHeroSliderInterval = null;
+    }
+
     const slider = document.querySelector('[data-hero-slider]');
     if (!slider) return;
 
@@ -194,6 +200,6 @@ function initAnimations() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    initFacilityHeroSlider();
+    // Hero slider는 mapper에서 이미지 로드 후 초기화됨
     initAnimations();
 });
