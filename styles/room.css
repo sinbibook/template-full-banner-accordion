@@ -1,5 +1,7 @@
 /* Room Page Styles */
 
+/* Ensure header is always on top - REMOVED to avoid conflicts */
+
 /* Hero section height override for room page - desktop default */
 .hero-section {
     height: 100vh;
@@ -28,11 +30,23 @@
 
 /* Mobile specific - contain zoom within hero area */
 @media (max-width: 768px) {
+    /* Ensure sections don't block fixed elements */
+    .room-about-section,
+    .room-gallery-section {
+        z-index: 1 !important;
+        position: relative;
+    }
+
+    .room-about-section::before {
+        z-index: 1 !important;
+    }
+
     .hero-section {
         height: 65vh !important;
         min-height: 65vh !important;
         overflow: hidden !important;
         position: relative;
+        z-index: 1 !important;
     }
 
     .hero-slider {
@@ -44,7 +58,10 @@
     .hero-slide {
         overflow: hidden !important;
         height: 65vh !important;
-        position: relative;
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100%;
     }
 
     .hero-slide img {

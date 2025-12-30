@@ -104,14 +104,14 @@ body.menu-open .menu-toggle {
     transition: filter 0.3s ease;
 }
 
-/* Logo image changes to dark green when scrolled */
+/* Logo image - no filter for PNG images */
 .transparent-header.scrolled .logo-img {
-    filter: brightness(0) sepia(1) saturate(100%) hue-rotate(120deg) brightness(0.3) contrast(1.2);
+    /* filter removed for PNG logo */
 }
 
-/* Logo image changes to rgb(99, 89, 85) when menu is active */
+/* Logo image - no filter when menu is active */
 body.menu-open .transparent-header .logo-img {
-    filter: brightness(0) sepia(1) saturate(100%) hue-rotate(10deg) brightness(0.5) contrast(0.9);
+    /* filter removed for PNG logo */
 }
 
 /* YBS button changes when menu is active */
@@ -122,7 +122,7 @@ body.menu-open .ybs-booking-btn {
 
 /* Dark Sections (Gallery & Closing) - Light Header Styles */
 body.dark-section-active .transparent-header .logo-img {
-    filter: brightness(0) invert(1);
+    /* filter removed for PNG logo */
 }
 
 body.dark-section-active .menu-toggle .menu-text {
@@ -392,6 +392,7 @@ body.dark-section-active .ybs-booking-btn {
         padding: 0 20px;
         justify-content: space-between;
         display: flex !important;
+        width: 100vw;
     }
 
     .header-logo {

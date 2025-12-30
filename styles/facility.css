@@ -46,7 +46,10 @@
     .hero-slide {
         overflow: hidden !important;
         height: 65vh !important;
-        position: relative;
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100%;
     }
 
     .hero-slide img {

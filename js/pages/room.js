@@ -8,6 +8,12 @@ window._roomHeroInterval = null;
 let isTransitioning = false;
 
 window.initRoomHeroSlider = function initHeroSlider() {
+    // 기존 interval 정리
+    if (window._roomHeroInterval) {
+        clearInterval(window._roomHeroInterval);
+        window._roomHeroInterval = null;
+    }
+
     const slider = document.querySelector('[data-hero-slider]');
     if (!slider) return;
 
@@ -275,7 +281,7 @@ function initAnimations() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    initRoomHeroSlider();
+    // Hero slider는 mapper에서 이미지 로드 후 초기화됨 - 여기서 호출하지 않음
     initRoomDetailSlider();
     initAnimations();
 });
