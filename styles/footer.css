@@ -322,11 +322,20 @@
 
     .footer-phone {
         order: 2;
+        text-align: left;
     }
 
     .footer-phone-text {
         font-size: 18px;
         font-weight: 500;
+    }
+
+    .footer-email {
+        order: 3;
+        text-align: left;
+        font-size: 13px;
+        margin-top: 5px;
+        color: #999;
     }
 
     /* 2. 주소와 사업자번호, 통신판매 */

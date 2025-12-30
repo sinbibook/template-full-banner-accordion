@@ -360,10 +360,10 @@ class RoomMapper extends BaseDataMapper {
             return;
         }
 
-        // 기존 어메니티 제거
-        amenitiesGrid.innerHTML = '';
+        // DocumentFragment를 사용하여 성능 최적화
+        const fragment = document.createDocumentFragment();
 
-        // 어메니티 아이템들 생성 (하트 아이콘 사용)
+        // 어메니티 아이템들 생성
         room.amenities.forEach(amenity => {
             const amenityDiv = document.createElement('div');
             amenityDiv.className = 'amenity-item';
@@ -380,8 +380,12 @@ class RoomMapper extends BaseDataMapper {
                 <span class="amenity-name">${this.sanitizeText(amenityName, '편의시설')}</span>
             `;
 
-            amenitiesGrid.appendChild(amenityDiv);
+            fragment.appendChild(amenityDiv);
         });
+
+        // DOM에 한 번만 추가하여 리플로우 최소화
+        amenitiesGrid.innerHTML = '';
+        amenitiesGrid.appendChild(fragment);
     }
 
     /**

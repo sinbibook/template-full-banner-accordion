@@ -146,12 +146,21 @@
     background: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari 지원 */
     border-radius: 0;
     margin-bottom: 30px;
     transition: all 0.4s ease;
     opacity: 0;
     transform: translateY(30px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* backdrop-filter를 지원하지 않는 브라우저를 위한 fallback */
+@supports not (backdrop-filter: blur(10px)) {
+    .reservation-box {
+        background: rgba(255, 255, 255, 0.85); /* 더 불투명한 배경 */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
 }
 
 .reservation-box:last-child {
