@@ -609,12 +609,24 @@
     }
 
     .room-gallery-container {
-        flex-direction: column;
+        max-width: 100%;
         position: relative;
         bottom: auto;
         transform: none;
         left: auto;
-        padding-bottom: 20px;
+        padding: 0 20px 20px;
+    }
+
+    .room-gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        justify-items: center;
+    }
+
+    .room-gallery-container .gallery-item {
+        width: 100%;
+        max-width: 350px;
+        height: 350px;
     }
 
 }

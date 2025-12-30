@@ -573,6 +573,57 @@ class HeaderFooterMapper extends BaseDataMapper {
     }
 
     /**
+     * Footer 소셜 링크 매핑
+     */
+    mapFooterSocialLinks() {
+        if (!this.isDataLoaded) return;
+
+        const socialLinks = this.safeGet(this.data, 'homepage.socialLinks');
+
+        // socialLinks가 빈 객체인지 체크
+        const hasAnyLink = socialLinks && Object.keys(socialLinks).length > 0;
+
+        // Facebook
+        const fbLink = this.safeSelect('[data-social-facebook]');
+        if (fbLink) {
+            if (hasAnyLink && socialLinks.facebook && socialLinks.facebook.trim() !== '') {
+                fbLink.href = socialLinks.facebook;
+                fbLink.target = '_blank';
+                fbLink.rel = 'noopener noreferrer';
+                fbLink.style.display = 'inline-flex';
+            } else {
+                fbLink.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        // Instagram
+        const igLink = this.safeSelect('[data-social-instagram]');
+        if (igLink) {
+            if (hasAnyLink && socialLinks.instagram && socialLinks.instagram.trim() !== '') {
+                igLink.href = socialLinks.instagram;
+                igLink.target = '_blank';
+                igLink.rel = 'noopener noreferrer';
+                igLink.style.display = 'inline-flex';
+            } else {
+                igLink.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        // Blog
+        const blogLink = this.safeSelect('[data-social-blog]');
+        if (blogLink) {
+            if (hasAnyLink && socialLinks.blog && socialLinks.blog.trim() !== '') {
+                blogLink.href = socialLinks.blog;
+                blogLink.target = '_blank';
+                blogLink.rel = 'noopener noreferrer';
+                blogLink.style.display = 'inline-flex';
+            } else {
+                blogLink.style.setProperty('display', 'none', 'important');
+            }
+        }
+    }
+
+    /**
      * Footer 전체 매핑 실행
      */
     async mapFooter() {
@@ -585,6 +636,7 @@ class HeaderFooterMapper extends BaseDataMapper {
         this.mapFooterLogo();
         this.mapFooterInfo();
         this.mapFooterMenus();
+        this.mapFooterSocialLinks();
 
         // E-commerce registration 매핑
         this.mapEcommerceRegistration();
