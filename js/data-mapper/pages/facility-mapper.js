@@ -94,6 +94,19 @@ class FacilityMapper extends BaseDataMapper {
             img.src = image.url;
             img.alt = image.description || facility.name;
             img.loading = index === 0 ? 'eager' : 'lazy';
+
+            // 첫 번째 이미지가 로드되면 슬라이더 초기화
+            if (index === 0) {
+                img.onload = () => {
+                    // 첫 이미지 로드 후 짧은 딜레이로 슬라이더 초기화
+                    setTimeout(() => {
+                        if (typeof window.initFacilityHeroSlider === 'function') {
+                            window.initFacilityHeroSlider();
+                        }
+                    }, 100);
+                };
+            }
+
             slide.appendChild(img);
             sliderInner.appendChild(slide);
         });
@@ -102,11 +115,6 @@ class FacilityMapper extends BaseDataMapper {
         const totalSlidesEl = this.safeSelect('[data-total-slides]');
         if (totalSlidesEl) {
             totalSlidesEl.textContent = selectedImages.length.toString().padStart(2, '0');
-        }
-
-        // 슬라이더 재초기화
-        if (typeof window.initFacilityHeroSlider === 'function') {
-            window.initFacilityHeroSlider();
         }
     }
 
@@ -360,12 +368,12 @@ class FacilityMapper extends BaseDataMapper {
         // 갤러리 컨테이너 초기화
         galleryContainer.innerHTML = '';
 
-        // 갤러리용 이미지 (2번째 인덱스부터 4장, Hero/Thumbnail/Main에서 사용하므로)
-        const galleryImages = selectedImages.slice(2, 6);
+        // 갤러리용 이미지 (2번째 인덱스부터 3장, Hero/Thumbnail에서 처음 2장 사용하므로)
+        const galleryImages = selectedImages.slice(2, 5);
 
         if (galleryImages.length === 0) {
-            // 이미지가 없으면 placeholder 4개 생성
-            for (let i = 0; i < 4; i++) {
+            // 이미지가 없으면 placeholder 3개 생성
+            for (let i = 0; i < 3; i++) {
                 const item = this._createGalleryItem(null, facility.name);
                 galleryContainer.appendChild(item);
             }
@@ -378,8 +386,8 @@ class FacilityMapper extends BaseDataMapper {
             galleryContainer.appendChild(item);
         });
 
-        // 이미지가 4장 미만이면 placeholder로 채움
-        for (let i = galleryImages.length; i < 4; i++) {
+        // 이미지가 3장 미만이면 placeholder로 채움
+        for (let i = galleryImages.length; i < 3; i++) {
             const item = this._createGalleryItem(null, facility.name);
             galleryContainer.appendChild(item);
         }

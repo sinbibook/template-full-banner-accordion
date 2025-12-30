@@ -140,6 +140,18 @@ class RoomMapper extends BaseDataMapper {
             imgElement.alt = this.sanitizeText(img.description, room.name);
             imgElement.loading = index === 0 ? 'eager' : 'lazy';
 
+            // 첫 번째 이미지가 로드되면 슬라이더 초기화
+            if (index === 0) {
+                imgElement.onload = () => {
+                    // 첫 이미지 로드 후 짧은 딜레이로 슬라이더 초기화
+                    setTimeout(() => {
+                        if (typeof window.initRoomHeroSlider === 'function') {
+                            window.initRoomHeroSlider();
+                        }
+                    }, 100);
+                };
+            }
+
             slideDiv.appendChild(imgElement);
             sliderContainer.appendChild(slideDiv);
         });
@@ -155,9 +167,10 @@ class RoomMapper extends BaseDataMapper {
      * Hero 슬라이더 재초기화
      */
     reinitializeHeroSlider() {
-        if (typeof window.initRoomHeroSlider === 'function') {
-            window.initRoomHeroSlider();
-        }
+        // 이제 mapHeroSlider에서 직접 처리하므로 여기서는 호출하지 않음
+        // if (typeof window.initRoomHeroSlider === 'function') {
+        //     window.initRoomHeroSlider();
+        // }
     }
 
     /**
@@ -417,8 +430,8 @@ class RoomMapper extends BaseDataMapper {
         galleryContainer.innerHTML = '';
 
         if (selectedImages.length === 0) {
-            // 이미지가 없을 경우 placeholder 4개 생성
-            for (let i = 0; i < 4; i++) {
+            // 이미지가 없을 경우 placeholder 3개 생성
+            for (let i = 0; i < 3; i++) {
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item animate-element';
 
@@ -436,8 +449,9 @@ class RoomMapper extends BaseDataMapper {
             return;
         }
 
-        // 이미지 생성
-        selectedImages.forEach((image, index) => {
+        // 이미지 생성 (최대 3개)
+        const galleryImages = selectedImages.slice(0, 3);
+        galleryImages.forEach((image, index) => {
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item animate-element';
 
@@ -454,6 +468,23 @@ class RoomMapper extends BaseDataMapper {
             galleryItem.appendChild(img);
             galleryContainer.appendChild(galleryItem);
         });
+
+        // 3개 미만일 경우 placeholder로 채움
+        for (let i = galleryImages.length; i < 3; i++) {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item animate-element';
+
+            const title = document.createElement('h3');
+            title.className = 'gallery-item-title';
+            title.textContent = '이미지 설명';
+
+            const img = document.createElement('img');
+            ImageHelpers.applyPlaceholder(img);
+
+            galleryItem.appendChild(title);
+            galleryItem.appendChild(img);
+            galleryContainer.appendChild(galleryItem);
+        }
     }
 
 
@@ -500,8 +531,8 @@ class RoomMapper extends BaseDataMapper {
         // E-commerce registration 매핑
         this.mapEcommerceRegistration();
 
-        // 슬라이더 재초기화 (동적 슬라이드 생성 후)
-        this.reinitializeHeroSlider();
+        // 슬라이더 재초기화는 이미지 onload에서 처리
+        // this.reinitializeHeroSlider();
 
         // 애니메이션 재초기화 (동적 요소들에 대해)
         this.reinitializeAnimations();
