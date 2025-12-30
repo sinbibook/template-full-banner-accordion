@@ -590,9 +590,9 @@ class HeaderFooterMapper extends BaseDataMapper {
                 fbLink.href = socialLinks.facebook;
                 fbLink.target = '_blank';
                 fbLink.rel = 'noopener noreferrer';
-                fbLink.style.display = 'inline-flex';
+                fbLink.classList.remove('is-hidden');
             } else {
-                fbLink.style.setProperty('display', 'none', 'important');
+                fbLink.classList.add('is-hidden');
             }
         }
 
@@ -603,9 +603,9 @@ class HeaderFooterMapper extends BaseDataMapper {
                 igLink.href = socialLinks.instagram;
                 igLink.target = '_blank';
                 igLink.rel = 'noopener noreferrer';
-                igLink.style.display = 'inline-flex';
+                igLink.classList.remove('is-hidden');
             } else {
-                igLink.style.setProperty('display', 'none', 'important');
+                igLink.classList.add('is-hidden');
             }
         }
 
@@ -616,9 +616,9 @@ class HeaderFooterMapper extends BaseDataMapper {
                 blogLink.href = socialLinks.blog;
                 blogLink.target = '_blank';
                 blogLink.rel = 'noopener noreferrer';
-                blogLink.style.display = 'inline-flex';
+                blogLink.classList.remove('is-hidden');
             } else {
-                blogLink.style.setProperty('display', 'none', 'important');
+                blogLink.classList.add('is-hidden');
             }
         }
     }

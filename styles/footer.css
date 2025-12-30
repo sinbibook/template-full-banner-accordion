@@ -178,6 +178,11 @@
     margin-top: 8px;
 }
 
+/* Utility class for hiding elements */
+.is-hidden {
+    display: none !important;
+}
+
 
 .footer-copyright {
     text-align: center;
