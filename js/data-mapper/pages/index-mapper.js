@@ -415,31 +415,27 @@ class IndexMapper extends BaseDataMapper {
      * Closing 섹션 버튼 업데이트 - 첫 번째 객실/시설로 이동
      */
     updateClosingButtons() {
-        // 객실 둘러보기 버튼 업데이트
-        const roomBtn = this.safeSelect('.closing-btn[onclick*="room"]');
-        if (roomBtn) {
-            const rooms = this.safeGet(this.data, 'rooms') || [];
-            if (rooms.length > 0) {
-                // displayOrder로 정렬 후 첫 번째 객실의 ID 가져오기
-                const sortedRooms = [...rooms].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-                const firstRoomId = sortedRooms[0]?.id;
-                if (firstRoomId) {
-                    roomBtn.onclick = () => navigateTo('room', firstRoomId);
-                }
-            }
-        }
+        this._updateButton('room', 'rooms');
+        this._updateButton('facility', 'property.facilities');
+    }
 
-        // 시설 둘러보기 버튼 업데이트
-        const facilityBtn = this.safeSelect('.closing-btn[onclick*="facility"]');
-        if (facilityBtn) {
-            const facilities = this.safeGet(this.data, 'property.facilities') || [];
-            if (facilities.length > 0) {
-                // displayOrder로 정렬 후 첫 번째 시설의 ID 가져오기
-                const sortedFacilities = [...facilities].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-                const firstFacilityId = sortedFacilities[0]?.id;
-                if (firstFacilityId) {
-                    facilityBtn.onclick = () => navigateTo('facility', firstFacilityId);
-                }
+    /**
+     * Closing 섹션의 버튼을 동적으로 업데이트하는 헬퍼 메서드
+     * @param {string} type - 버튼 타입 ('room' 또는 'facility')
+     * @param {string} dataPath - 데이터 경로
+     * @private
+     */
+    _updateButton(type, dataPath) {
+        const button = this.safeSelect(`.closing-btn[onclick*="${type}"]`);
+        if (!button) return;
+
+        const items = this.safeGet(this.data, dataPath) || [];
+        if (items.length > 0) {
+            // displayOrder로 정렬 후 첫 번째 아이템의 ID 가져오기
+            const sortedItems = [...items].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+            const firstItemId = sortedItems[0]?.id;
+            if (firstItemId) {
+                button.onclick = () => navigateTo(type, firstItemId);
             }
         }
     }
