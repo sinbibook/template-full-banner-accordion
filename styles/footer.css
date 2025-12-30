@@ -173,6 +173,11 @@
     letter-spacing: 0.02em;
 }
 
+.footer-email {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
 
 .footer-copyright {
     text-align: center;
