@@ -71,7 +71,6 @@
     /* Ensure zoom animation stays within bounds */
     .hero-slide img {
         transform-origin: center center;
-        will-change: transform;
     }
 
     /* Mobile hero-property-title positioning */
@@ -459,8 +458,14 @@
 }
 
 .amenity-icon {
-    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
     color: var(--color-secondary);
+}
+
+.amenity-icon svg {
+    width: 16px;
+    height: 16px;
 }
 
 .amenity-name {
@@ -536,6 +541,7 @@
     padding-top: 200px;
     padding-bottom: 15px;
     position: relative;
+    overflow: visible; /* Fixed header를 위해 추가 */
 }
 
 /* Room Gallery Label */
@@ -579,10 +585,8 @@
     display: flex;
     justify-content: center;
     gap: 20px;
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    margin: 100px auto 0;
     width: 100%;
     max-width: 1600px;  /* 컨테이너 너비 증가 */
     padding: 0 20px;
@@ -625,12 +629,10 @@
         transform: none;
         left: auto;
         padding: 0 20px 20px;
-    }
-
-    .room-gallery-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         gap: 15px;
-        justify-items: center;
     }
 
     .room-gallery-container .gallery-item {

@@ -140,12 +140,27 @@
     gap: 0;
 }
 
-/* Reservation Box - 배경색 없는 스타일 */
+/* Reservation Box - 투명한 흰색 배경 박스 스타일 */
 .reservation-box {
-    padding: 50px 0;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari 지원 */
+    border-radius: 0;
+    margin-bottom: 30px;
     transition: all 0.4s ease;
     opacity: 0;
     transform: translateY(30px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* backdrop-filter를 지원하지 않는 브라우저를 위한 fallback */
+@supports not (backdrop-filter: blur(10px)) {
+    .reservation-box {
+        background: rgba(255, 255, 255, 0.85); /* 더 불투명한 배경 */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
 }
 
 .reservation-box:last-child {
@@ -172,7 +187,7 @@
 /* Box Content */
 .reservation-text-content {
     font-size: 1rem;
-    line-height: 1.2;
+    line-height: 1.8;
     color: var(--text-secondary);
     white-space: pre-line;
 }
@@ -306,7 +321,7 @@
     }
 
     .reservation-box {
-        padding: 60px 0;
+        padding: 30px;
     }
 
     .reservation-info-content {
@@ -346,7 +361,7 @@
 
 @media (max-width: 480px) {
     .reservation-box {
-        padding: 40px 0;
+        padding: 25px;
     }
 
     .reservation-label {

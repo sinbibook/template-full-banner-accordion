@@ -406,6 +406,38 @@ class IndexMapper extends BaseDataMapper {
         if (closingTitle && propertyNameEn) {
             closingTitle.textContent = this.sanitizeText(propertyNameEn);
         }
+
+        // 버튼 클릭 이벤트 업데이트 - 첫 번째 객실/시설로 이동
+        this.updateClosingButtons();
+    }
+
+    /**
+     * Closing 섹션 버튼 업데이트 - 첫 번째 객실/시설로 이동
+     */
+    updateClosingButtons() {
+        this._updateButton('room', 'rooms');
+        this._updateButton('facility', 'property.facilities');
+    }
+
+    /**
+     * Closing 섹션의 버튼을 동적으로 업데이트하는 헬퍼 메서드
+     * @param {string} type - 버튼 타입 ('room' 또는 'facility')
+     * @param {string} dataPath - 데이터 경로
+     * @private
+     */
+    _updateButton(type, dataPath) {
+        const button = this.safeSelect(`.closing-btn[onclick*="${type}"]`);
+        if (!button) return;
+
+        const items = this.safeGet(this.data, dataPath) || [];
+        if (items.length > 0) {
+            // displayOrder로 정렬 후 첫 번째 아이템의 ID 가져오기
+            const sortedItems = [...items].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+            const firstItemId = sortedItems[0]?.id;
+            if (firstItemId) {
+                button.onclick = () => navigateTo(type, firstItemId);
+            }
+        }
     }
 }
 

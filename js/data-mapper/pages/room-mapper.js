@@ -294,7 +294,8 @@ class RoomMapper extends BaseDataMapper {
         // 객실 크기 (시스템 데이터)
         const roomSize = this.safeSelect('[data-room-size]');
         if (roomSize) {
-            roomSize.textContent = room.size || '-';
+            const size = room.size ? `${room.size}㎡` : '-';
+            roomSize.textContent = size;
         }
 
         // 침대 타입 (시스템 데이터)
@@ -359,10 +360,10 @@ class RoomMapper extends BaseDataMapper {
             return;
         }
 
-        // 기존 어메니티 제거
-        amenitiesGrid.innerHTML = '';
+        // DocumentFragment를 사용하여 성능 최적화
+        const fragment = document.createDocumentFragment();
 
-        // 어메니티 아이템들 생성 (하트 아이콘 사용)
+        // 어메니티 아이템들 생성
         room.amenities.forEach(amenity => {
             const amenityDiv = document.createElement('div');
             amenityDiv.className = 'amenity-item';
@@ -370,12 +371,21 @@ class RoomMapper extends BaseDataMapper {
             const amenityName = amenity.name?.ko || amenity.name || amenity;
 
             amenityDiv.innerHTML = `
-                <span class="amenity-icon">♡</span>
+                <span class="amenity-icon">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="15" height="15" rx="2" stroke="currentColor"/>
+                        <path d="M4 8L6.5 10.5L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
                 <span class="amenity-name">${this.sanitizeText(amenityName, '편의시설')}</span>
             `;
 
-            amenitiesGrid.appendChild(amenityDiv);
+            fragment.appendChild(amenityDiv);
         });
+
+        // DOM에 한 번만 추가하여 리플로우 최소화
+        amenitiesGrid.innerHTML = '';
+        amenitiesGrid.appendChild(fragment);
     }
 
     /**
