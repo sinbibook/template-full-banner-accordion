@@ -95,6 +95,7 @@
 
 .footer-logo {
     width: 140px;
+    max-width: 100%;
 }
 
 .footer-logo-text {
@@ -313,11 +314,7 @@
 
     .footer-logo {
         order: 1;
-    }
-
-    .footer-logo-img {
         width: 120px;
-        height: auto;
     }
 
     .footer-phone {

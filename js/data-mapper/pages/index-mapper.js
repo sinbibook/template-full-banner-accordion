@@ -406,6 +406,42 @@ class IndexMapper extends BaseDataMapper {
         if (closingTitle && propertyNameEn) {
             closingTitle.textContent = this.sanitizeText(propertyNameEn);
         }
+
+        // 버튼 클릭 이벤트 업데이트 - 첫 번째 객실/시설로 이동
+        this.updateClosingButtons();
+    }
+
+    /**
+     * Closing 섹션 버튼 업데이트 - 첫 번째 객실/시설로 이동
+     */
+    updateClosingButtons() {
+        // 객실 둘러보기 버튼 업데이트
+        const roomBtn = this.safeSelect('.closing-btn[onclick*="room"]');
+        if (roomBtn) {
+            const rooms = this.safeGet(this.data, 'rooms') || [];
+            if (rooms.length > 0) {
+                // displayOrder로 정렬 후 첫 번째 객실의 ID 가져오기
+                const sortedRooms = [...rooms].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+                const firstRoomId = sortedRooms[0]?.id;
+                if (firstRoomId) {
+                    roomBtn.onclick = () => navigateTo('room', firstRoomId);
+                }
+            }
+        }
+
+        // 시설 둘러보기 버튼 업데이트
+        const facilityBtn = this.safeSelect('.closing-btn[onclick*="facility"]');
+        if (facilityBtn) {
+            const facilities = this.safeGet(this.data, 'property.facilities') || [];
+            if (facilities.length > 0) {
+                // displayOrder로 정렬 후 첫 번째 시설의 ID 가져오기
+                const sortedFacilities = [...facilities].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+                const firstFacilityId = sortedFacilities[0]?.id;
+                if (firstFacilityId) {
+                    facilityBtn.onclick = () => navigateTo('facility', firstFacilityId);
+                }
+            }
+        }
     }
 }
 
