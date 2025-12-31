@@ -42,7 +42,8 @@
                 menuText.textContent = 'MENU';
             }
 
-            // No need to restore scroll since we didn't prevent it
+            // Restore body scroll
+            body.style.overflow = '';
         } else {
             // Open menu
             // Change text to CLOSE
@@ -56,7 +57,8 @@
             body.classList.add('menu-open');
             if (overlayBg) overlayBg.classList.add('active');
 
-            // Keep scroll visible - don't prevent scrolling
+            // Prevent body scroll when menu is open
+            body.style.overflow = 'hidden';
         }
     };
 
