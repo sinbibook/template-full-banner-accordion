@@ -251,6 +251,7 @@ body.dark-section-active .ybs-booking-btn {
     height: 100vh;
     overflow-y: auto; /* 섹션 전체 스크롤 활성화 */
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 지원 */
 }
 
 /* Right Section - Image */
@@ -279,12 +280,6 @@ body.dark-section-active .ybs-booking-btn {
 .menu-item {
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-/* 아코디언 기본 상태 - 모두 열림 */
-.menu-item.accordion-active .menu-item-list {
-    max-height: 500px;
-    opacity: 1;
 }
 
 /* 아코디언 닫힌 상태 */
@@ -488,6 +483,7 @@ body.dark-section-active .ybs-booking-btn {
         padding: 100px 30px 30px 20px;
         height: 100vh;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 지원 */
     }
     
     .menu-right-section {
