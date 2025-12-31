@@ -41,8 +41,6 @@
             if (menuText) {
                 menuText.textContent = 'MENU';
             }
-
-            // No need to restore scroll since we didn't prevent it
         } else {
             // Open menu
             // Change text to CLOSE
@@ -55,8 +53,6 @@
             menuToggle.classList.add('active');
             body.classList.add('menu-open');
             if (overlayBg) overlayBg.classList.add('active');
-
-            // Keep scroll visible - don't prevent scrolling
         }
     };
 
