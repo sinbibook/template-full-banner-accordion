@@ -395,7 +395,7 @@
         font-size: 14px;
         font-weight: 600;
         margin-bottom: 12px;
-        color: #333;
+        color: var(--color-secondary);
     }
 
     .footer-menu-items {
@@ -406,7 +406,8 @@
 
     .footer-menu-items a {
         font-size: 12px;
-        color: #666;
+        color: var(--color-secondary);
+        opacity: 0.7;
         text-decoration: none;
         line-height: 1.3;
     }
