@@ -114,6 +114,11 @@ body.menu-open .transparent-header .logo-img {
     /* filter removed for PNG logo */
 }
 
+/* Body scroll lock when menu is open */
+body.menu-open {
+    overflow: hidden;
+}
+
 /* YBS button changes when menu is active */
 body.menu-open .ybs-booking-btn {
     border-color: #333;
