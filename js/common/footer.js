@@ -61,7 +61,7 @@
         updateCopyrightYear();
 
         // Set up Gpension reservation button
-        const realtimeBtn = document.querySelector('[data-property-gpension-id]');
+        const realtimeBtn = document.querySelector('[data-property-realtime-booking-id]');
         if (realtimeBtn) {
             realtimeBtn.addEventListener('click', handleGpensionReservation);
         }
