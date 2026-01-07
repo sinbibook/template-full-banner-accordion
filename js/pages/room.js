@@ -176,13 +176,13 @@ window.initRoomHeroSlider = function initHeroSlider() {
 
 // 디테일 슬라이더 (룸 디테일용)
 window.initRoomDetailSlider = function initRoomDetailSlider() {
-    // 기존 디테일 슬라이더 코드는 그대로 유지
-    const sliderContainer = document.querySelector('[data-room-detail-slider]');
+    // Room Detail 슬라이더 요소들
+    const sliderContainer = document.querySelector('[data-room-slider]');
     if (!sliderContainer) return;
 
-    const slides = Array.from(sliderContainer.querySelectorAll('.detail-slide'));
-    const indicators = Array.from(sliderContainer.querySelectorAll('.detail-indicator'));
-    const thumbs = Array.from(sliderContainer.querySelectorAll('.detail-thumb'));
+    const slides = Array.from(document.querySelectorAll('.room-slide'));
+    const indicators = Array.from(document.querySelectorAll('[data-room-slider-indicators] .indicator'));
+    const thumbs = Array.from(document.querySelectorAll('[data-room-thumbnails] .thumb-img'));
 
     if (slides.length === 0) return;
 

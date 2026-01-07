@@ -278,10 +278,12 @@ class RoomMapper extends BaseDataMapper {
             }
         }
 
-        // Room Detail 슬라이더 재초기화
-        if (typeof window.initRoomDetailSlider === 'function') {
-            window.initRoomDetailSlider();
-        }
+        // Room Detail 슬라이더 재초기화 (DOM 렌더링 완료 후)
+        setTimeout(() => {
+            if (typeof window.initRoomDetailSlider === 'function') {
+                window.initRoomDetailSlider();
+            }
+        }, 100);
     }
 
     /**
