@@ -180,8 +180,12 @@ window.initRoomDetailSlider = function initRoomDetailSlider() {
     const sliderContainer = document.querySelector('[data-room-slider]');
     if (!sliderContainer) return;
 
-    const slides = Array.from(document.querySelectorAll('.room-slide'));
-    const indicators = Array.from(document.querySelectorAll('[data-room-slider-indicators] .indicator'));
+    // sliderContainer 내부에서 slides 찾기 (스코프 한정)
+    const slides = Array.from(sliderContainer.querySelectorAll('.room-slide'));
+    // indicators도 컨테이너 내부에서 찾기
+    const indicatorsContainer = document.querySelector('[data-room-slider-indicators]');
+    const indicators = indicatorsContainer ? Array.from(indicatorsContainer.querySelectorAll('.indicator')) : [];
+    // thumbs는 외부에 있으므로 document에서 찾기
     const thumbs = Array.from(document.querySelectorAll('[data-room-thumbnails] .thumb-img'));
 
     if (slides.length === 0) return;
