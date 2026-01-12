@@ -41,8 +41,8 @@
 
 .footer-menu-groups {
     display: flex;
-    gap: 50px;
-    flex: 1;
+    gap: 35px;
+    flex: 2;
 }
 
 .footer-menu-group {
@@ -78,7 +78,7 @@
 }
 
 .footer-info-section {
-    flex: 1;
+    flex: 2;
     display: flex;
     flex-direction: column;
     justify-content: center; /* 세로 중앙 정렬 추가 */
