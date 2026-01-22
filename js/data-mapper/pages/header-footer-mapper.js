@@ -493,9 +493,9 @@ class HeaderFooterMapper extends BaseDataMapper {
 
         // 저작권 정보 매핑
         const copyrightElement = this.safeSelect('[data-footer-copyright]');
-        if (copyrightElement && businessInfo.businessName) {
+        if (copyrightElement) {
             const currentYear = new Date().getFullYear();
-            copyrightElement.textContent = `© ${currentYear} ${businessInfo.businessName}. All rights reserved.`;
+            copyrightElement.innerHTML = `<a href="https://sinbibook.com" target="_blank" style="color: inherit; text-decoration: none;">© ${currentYear} 신비서. All rights reserved.</a>`;
         }
     }
 
