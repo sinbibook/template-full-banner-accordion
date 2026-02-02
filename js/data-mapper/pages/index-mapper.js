@@ -117,11 +117,11 @@ class IndexMapper extends BaseDataMapper {
         const heroData = this.safeGet(this.data, 'homepage.customFields.pages.index.sections.0.hero');
         if (!heroData) return;
 
-        // 숙소 영문명 매핑
-        const propertyNameEn = this.safeGet(this.data, 'property.nameEn');
+        // 숙소 영문명 매핑 (customFields 우선)
+        const propertyNameEn = this.getPropertyNameEn();
         const heroPropertyNameEn = this.safeSelect('[data-hero-property-name-en]');
-        if (heroPropertyNameEn && propertyNameEn) {
-            heroPropertyNameEn.textContent = this.sanitizeText(propertyNameEn);
+        if (heroPropertyNameEn) {
+            heroPropertyNameEn.textContent = propertyNameEn;
         }
 
         // 메인 소개 타이틀 매핑
@@ -540,11 +540,11 @@ class IndexMapper extends BaseDataMapper {
             descElement.innerHTML = this._formatTextWithLineBreaks(closingData?.description, '마무리 섹션 설명');
         }
 
-        // 숙소명 매핑 (새로운 closing-property-name 요소)
-        const propertyNameEn = this.safeGet(this.data, 'property.nameEn');
+        // 숙소명 매핑 (customFields 우선)
+        const propertyNameEn = this.getPropertyNameEn();
         const closingPropertyName = this.safeSelect('[data-closing-property-name]');
-        if (closingPropertyName && propertyNameEn) {
-            closingPropertyName.textContent = this.sanitizeText(propertyNameEn);
+        if (closingPropertyName) {
+            closingPropertyName.textContent = propertyNameEn;
         }
 
         // 마무리 섹션 타이틀 매핑

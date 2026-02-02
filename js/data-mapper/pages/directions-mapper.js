@@ -141,35 +141,31 @@ class DirectionsMapper extends BaseDataMapper {
      * property.nameEn → [data-directions-banner-title]
      * property.images[0].exterior[] → full-banner 섹션 배경 이미지
      */
+    /**
+     * Full Banner 섹션 매핑 (customFields 우선)
+     * customFields.property.nameEn → [data-directions-banner-title]
+     * customFields.property.images (property_exterior) → [data-directions-banner-bg] 배경 이미지
+     */
     mapFullBanner() {
         if (!this.isDataLoaded) return;
 
-        // 배너 타이틀 매핑 (property.nameEn)
+        // 배너 타이틀 매핑 (customFields 우선)
         const bannerTitle = this.safeSelect('[data-directions-banner-title]');
         if (bannerTitle) {
-            const nameEn = this.safeGet(this.data, 'property.nameEn');
-            bannerTitle.textContent = this.sanitizeText(nameEn, 'PROPERTY NAME').toUpperCase();
+            bannerTitle.textContent = this.getPropertyNameEn().toUpperCase();
         }
 
-        // 배너 배경 이미지 매핑 - 섹션 자체에 배경 설정
-        const bannerSection = this.safeSelect('.full-banner');
-        if (!bannerSection) return;
+        // 배너 배경 이미지 매핑 (customFields 우선)
+        const bannerBg = this.safeSelect('[data-directions-banner-bg]');
+        if (!bannerBg) return;
 
-        const propertyImages = this.safeGet(this.data, 'property.images');
-        const exteriorImages = this.safeGet(propertyImages?.[0], 'exterior');
+        // customFields에서 property_exterior 카테고리 이미지 가져오기
+        const exteriorImages = this.getPropertyImages('property_exterior');
 
-        // ImageHelpers를 사용하여 첫 번째 선택된 이미지 가져오기
-        const selectedImages = ImageHelpers.getSelectedImages(exteriorImages);
-
-        if (selectedImages.length > 0) {
-            const firstImage = selectedImages[0];
-            bannerSection.style.backgroundImage = `url('${firstImage.url}')`;
-            bannerSection.style.backgroundSize = 'cover';
-            bannerSection.style.backgroundPosition = 'center';
-            bannerSection.style.backgroundRepeat = 'no-repeat';
+        if (exteriorImages.length > 0) {
+            bannerBg.style.backgroundImage = `url('${exteriorImages[0].url}')`;
         } else {
-            // placeholder 배경 이미지
-            ImageHelpers.applyPlaceholder(bannerSection);
+            bannerBg.style.backgroundImage = `url('${ImageHelpers.EMPTY_IMAGE_WITH_ICON}')`;
         }
     }
 

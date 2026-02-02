@@ -88,18 +88,17 @@ class MainMapper extends BaseDataMapper {
 
 
     /**
-     * Full Banner 섹션 매핑
-     * property.nameEn (영문명) → [data-main-banner-title]
+     * Full Banner 섹션 매핑 (customFields 우선)
+     * customFields.property.nameEn → [data-main-banner-title]
      * main hero images → [data-main-banner] 배경 이미지
      */
     mapFullBanner() {
         if (!this.isDataLoaded) return;
 
-        // 배너 타이틀 매핑 (property.nameEn)
+        // 배너 타이틀 매핑 (customFields 우선)
         const bannerTitle = this.safeSelect('[data-main-banner-title]');
         if (bannerTitle) {
-            const nameEn = this.safeGet(this.data, 'property.nameEn');
-            bannerTitle.textContent = this.sanitizeText(nameEn, 'PROPERTY NAME').toUpperCase();
+            bannerTitle.textContent = this.getPropertyNameEn().toUpperCase();
         }
 
         // 배너 배경 이미지 매핑 - 섹션 자체에 배경 설정

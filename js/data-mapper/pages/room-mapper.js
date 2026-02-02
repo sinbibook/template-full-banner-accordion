@@ -101,11 +101,8 @@ class RoomMapper extends BaseDataMapper {
         const sliderContainer = this.safeSelect('[data-hero-slider]');
         if (!sliderContainer) return;
 
-        // JSON 구조에 따라 interior 이미지 배열 가져오기
-        const interiorImages = room.images?.[0]?.interior;
-
-        // ImageHelpers 사용하여 선택된 이미지 필터링
-        const selectedImages = ImageHelpers.getSelectedImages(interiorImages);
+        // customFields 이미지 사용
+        const selectedImages = this.getRoomImages(room, 'roomtype_interior');
 
         // 슬라이더 초기화
         sliderContainer.innerHTML = '';
@@ -174,26 +171,31 @@ class RoomMapper extends BaseDataMapper {
     }
 
     /**
-     * 기본 정보 섹션 매핑 (객실명, 썸네일, 설명)
-     * rooms[index].name → [data-room-name]
-     * rooms[index].images[0].thumbnail → [data-room-thumbnail]
+     * 기본 정보 섹션 매핑 (객실명, 썸네일, 설명) - customFields 우선
+     * customFields.roomtypes[index].name → [data-room-name]
+     * customFields.roomtypes[index].images (roomtype_thumbnail) → [data-room-thumbnail]
      * homepage.customFields.pages.room[index].sections[0].hero.title → [data-room-description]
      */
     mapBasicInfo() {
         const room = this.getCurrentRoom();
         if (!room) return;
 
-        // 객실명 매핑
+        // 객실명 매핑 (customFields 우선)
         const roomName = this.safeSelect('[data-room-name]');
         if (roomName) {
-            roomName.textContent = this.sanitizeText(room.name, '객실명');
+            roomName.textContent = this.getRoomName(room);
         }
 
-        // 썸네일 이미지 매핑
+        // 썸네일 이미지 매핑 (customFields)
         const roomThumbnail = this.safeSelect('[data-room-thumbnail]');
         if (roomThumbnail) {
-            const thumbnailImages = room.images?.[0]?.thumbnail;
-            ImageHelpers.applyImageOrPlaceholder(roomThumbnail, thumbnailImages);
+            const customThumbnails = this.getRoomImages(room, 'roomtype_thumbnail');
+            if (customThumbnails.length > 0) {
+                roomThumbnail.src = customThumbnails[0].url;
+                roomThumbnail.alt = customThumbnails[0].description || this.getRoomName(room);
+            } else {
+                ImageHelpers.applyPlaceholder(roomThumbnail);
+            }
         }
 
         // 객실 설명 매핑 (CUSTOM FIELD)
@@ -206,8 +208,8 @@ class RoomMapper extends BaseDataMapper {
     }
 
     /**
-     * Room Detail 슬라이더 매핑
-     * rooms[index].images[0].interior (index 2~5) → [data-room-slider-wrapper], [data-room-thumbnails]
+     * Room Detail 슬라이더 매핑 (customFields 우선)
+     * customFields.roomtypes[index].images (roomtype_interior, index 2~5) → [data-room-slider-wrapper], [data-room-thumbnails]
      */
     mapRoomDetailSlider() {
         const room = this.getCurrentRoom();
@@ -219,9 +221,8 @@ class RoomMapper extends BaseDataMapper {
 
         if (!sliderWrapper) return;
 
-        // interior 이미지에서 선택된 것들 가져오기
-        const interiorImages = room.images?.[0]?.interior;
-        const selectedImages = ImageHelpers.getSelectedImages(interiorImages);
+        // customFields 이미지 사용
+        const selectedImages = this.getRoomImages(room, 'roomtype_interior');
 
         // 인덱스 2번부터 4개 이미지 (Room Detail용)
         const detailImages = selectedImages.slice(2, 6);
@@ -461,9 +462,9 @@ class RoomMapper extends BaseDataMapper {
 
 
     /**
-     * 갤러리 섹션 매핑 - facility와 동일한 구조
+     * 갤러리 섹션 매핑 (customFields 우선)
      * homepage.customFields.pages.room[index].sections[0].gallery.title → [data-room-gallery-title]
-     * rooms[index].images[0].exterior → [data-room-gallery]
+     * customFields.roomtypes[index].images (roomtype_exterior) → [data-room-gallery]
      */
     mapGallerySection() {
         const room = this.getCurrentRoom();
@@ -485,9 +486,8 @@ class RoomMapper extends BaseDataMapper {
         const galleryContainer = this.safeSelect('[data-room-gallery]');
         if (!galleryContainer) return;
 
-        // exterior 이미지 가져오기
-        const exteriorImages = room.images?.[0]?.exterior;
-        const selectedImages = ImageHelpers.getSelectedImages(exteriorImages);
+        // customFields 이미지 사용
+        const selectedImages = this.getRoomImages(room, 'roomtype_exterior');
 
         console.log('Room exterior images:', selectedImages.length);
 
