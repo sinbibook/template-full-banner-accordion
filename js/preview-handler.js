@@ -719,7 +719,6 @@ class PreviewHandler {
                         break;
                     case 'about':
                         mapper.mapAboutSection();
-                        mapper.mapMarqueeSection();
                         mapper.mapIntroductionSection();
                         break;
                 }

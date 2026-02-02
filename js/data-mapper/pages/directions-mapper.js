@@ -116,6 +116,7 @@ class DirectionsMapper extends BaseDataMapper {
 
         const directionsData = this.safeGet(this.data, 'homepage.customFields.pages.directions.sections.0');
         const notesElement = this.safeSelect('[data-directions-notes]');
+        const dividerElement = this.safeSelect('.location-divider');
 
         if (!notesElement) return;
 
@@ -126,16 +127,19 @@ class DirectionsMapper extends BaseDataMapper {
         if (directionsData?.notice?.description) {
             notesElement.innerHTML = this._formatTextWithLineBreaks(directionsData.notice.description);
             notesElement.style.display = '';
+            // 구분선도 표시
+            if (dividerElement) dividerElement.style.display = '';
         } else {
-            // 데이터가 없으면 숨김
+            // 데이터가 없으면 노트와 구분선 모두 숨김
             notesElement.style.display = 'none';
+            if (dividerElement) dividerElement.style.display = 'none';
         }
     }
 
     /**
      * Full Banner 섹션 매핑
      * property.nameEn → [data-directions-banner-title]
-     * property.images[0].exterior[] → [data-directions-banner-bg] 배경 이미지
+     * property.images[0].exterior[] → full-banner 섹션 배경 이미지
      */
     mapFullBanner() {
         if (!this.isDataLoaded) return;
@@ -147,20 +151,25 @@ class DirectionsMapper extends BaseDataMapper {
             bannerTitle.textContent = this.sanitizeText(nameEn, 'PROPERTY NAME').toUpperCase();
         }
 
-        // 배너 배경 이미지 매핑
-        const bannerBg = this.safeSelect('[data-directions-banner-bg]');
-        if (!bannerBg) return;
+        // 배너 배경 이미지 매핑 - 섹션 자체에 배경 설정
+        const bannerSection = this.safeSelect('.full-banner');
+        if (!bannerSection) return;
 
         const propertyImages = this.safeGet(this.data, 'property.images');
         const exteriorImages = this.safeGet(propertyImages?.[0], 'exterior');
 
         // ImageHelpers를 사용하여 첫 번째 선택된 이미지 가져오기
-        const targetImage = ImageHelpers.getFirstSelectedImage(exteriorImages);
+        const selectedImages = ImageHelpers.getSelectedImages(exteriorImages);
 
-        if (targetImage) {
-            bannerBg.style.backgroundImage = `url('${targetImage.url}')`;
+        if (selectedImages.length > 0) {
+            const firstImage = selectedImages[0];
+            bannerSection.style.backgroundImage = `url('${firstImage.url}')`;
+            bannerSection.style.backgroundSize = 'cover';
+            bannerSection.style.backgroundPosition = 'center';
+            bannerSection.style.backgroundRepeat = 'no-repeat';
         } else {
-            bannerBg.style.backgroundImage = `url('${ImageHelpers.EMPTY_IMAGE_WITH_ICON}')`;
+            // placeholder 배경 이미지
+            ImageHelpers.applyPlaceholder(bannerSection);
         }
     }
 
@@ -168,26 +177,6 @@ class DirectionsMapper extends BaseDataMapper {
      * Marquee 섹션 매핑
      * property.nameEn → [data-marquee-property-name] 내부 span들 (uppercase)
      */
-    mapMarqueeSection() {
-        if (!this.isDataLoaded) return;
-
-        const property = this.safeGet(this.data, 'property');
-        const marqueeContainer = this.safeSelect('[data-marquee-property-name]');
-
-        if (!marqueeContainer || !property || !property.nameEn) return;
-
-        // 기존 span 제거
-        marqueeContainer.innerHTML = '';
-
-        // 5개의 span 생성
-        const nameEnUpper = this.sanitizeText(property.nameEn, 'PROPERTY NAME').toUpperCase();
-
-        for (let i = 0; i < 5; i++) {
-            const span = document.createElement('span');
-            span.textContent = nameEnUpper;
-            marqueeContainer.appendChild(span);
-        }
-    }
 
     /**
      * 카카오맵 초기화 및 표시
@@ -285,7 +274,6 @@ class DirectionsMapper extends BaseDataMapper {
         this.mapLocationInfo(); // 숙소명, 주소 매핑
         this.mapNotesSection(); // 안내사항 매핑
         this.mapFullBanner(); // Full Banner 섹션 매핑
-        this.mapMarqueeSection(); // Marquee 섹션 매핑
         this.initKakaoMap(); // 카카오맵 초기화 및 표시
 
         // 메타 태그 업데이트 (페이지별 SEO 적용)

@@ -86,35 +86,11 @@ class MainMapper extends BaseDataMapper {
         }
     }
 
-    /**
-     * Marquee 섹션 매핑
-     * property.nameEn → [data-marquee-property-name] 내부 span들 (uppercase)
-     */
-    mapMarqueeSection() {
-        if (!this.isDataLoaded) return;
-
-        const property = this.safeGet(this.data, 'property');
-        const marqueeContainer = this.safeSelect('[data-marquee-property-name]');
-
-        if (!marqueeContainer || !property || !property.nameEn) return;
-
-        // 기존 span 제거
-        marqueeContainer.innerHTML = '';
-
-        // 5개의 span 생성
-        const nameEnUpper = this.sanitizeText(property.nameEn, 'PROPERTY NAME').toUpperCase();
-
-        for (let i = 0; i < 5; i++) {
-            const span = document.createElement('span');
-            span.textContent = nameEnUpper;
-            marqueeContainer.appendChild(span);
-        }
-    }
 
     /**
      * Full Banner 섹션 매핑
-     * property.nameEn → [data-main-banner-title]
-     * property.images[0].exterior[] → [data-main-banner-bg] 배경 이미지
+     * property.nameEn (영문명) → [data-main-banner-title]
+     * main hero images → [data-main-banner] 배경 이미지
      */
     mapFullBanner() {
         if (!this.isDataLoaded) return;
@@ -126,20 +102,23 @@ class MainMapper extends BaseDataMapper {
             bannerTitle.textContent = this.sanitizeText(nameEn, 'PROPERTY NAME').toUpperCase();
         }
 
-        // 배너 배경 이미지 매핑
-        const bannerBg = this.safeSelect('[data-main-banner-bg]');
-        if (!bannerBg) return;
+        // 배너 배경 이미지 매핑 - 섹션 자체에 배경 설정
+        const bannerSection = this.safeSelect('[data-main-banner]');
+        if (!bannerSection) return;
 
-        const propertyImages = this.safeGet(this.data, 'property.images');
-        const exteriorImages = this.safeGet(propertyImages?.[0], 'exterior');
+        // main hero 이미지 사용
+        const heroData = this.safeGet(this.data, 'homepage.customFields.pages.main.sections.0.hero');
+        const selectedImages = ImageHelpers.getSelectedImages(heroData?.images);
 
-        // ImageHelpers를 사용하여 첫 번째 선택된 이미지 가져오기
-        const targetImage = ImageHelpers.getFirstSelectedImage(exteriorImages);
-
-        if (targetImage) {
-            bannerBg.style.backgroundImage = `url('${targetImage.url}')`;
+        if (selectedImages.length > 0) {
+            const firstImage = selectedImages[0];
+            bannerSection.style.backgroundImage = `url('${firstImage.url}')`;
+            bannerSection.style.backgroundSize = 'cover';
+            bannerSection.style.backgroundPosition = 'center';
+            bannerSection.style.backgroundRepeat = 'no-repeat';
         } else {
-            bannerBg.style.backgroundImage = `url('${ImageHelpers.EMPTY_IMAGE_WITH_ICON}')`;
+            // placeholder 배경 이미지
+            ImageHelpers.applyPlaceholder(bannerSection);
         }
     }
 
@@ -301,7 +280,6 @@ class MainMapper extends BaseDataMapper {
         // Main 페이지 섹션들 순차 매핑
         this.mapHeroSlider();
         this.mapAboutSection();
-        this.mapMarqueeSection();
         this.mapFullBanner();
         this.mapIntroductionSection();
 

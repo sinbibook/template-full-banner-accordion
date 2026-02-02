@@ -254,6 +254,31 @@ class ReservationMapper extends BaseDataMapper {
     }
 
     /**
+     * 예약 페이지 About 이미지 매핑 (reservation > about > images)
+     */
+    mapReservationAboutImage() {
+        if (!this.isDataLoaded || !this.data.property) return;
+
+        const reservationData = this.safeGet(this.data, 'homepage.customFields.pages.reservation.sections.0');
+        const imageContainer = this.safeSelect('[data-reservation-about-image]');
+        if (!imageContainer) return;
+
+        const img = imageContainer.querySelector('img');
+        if (!img) return;
+
+        // reservation.about.images에서 첫 번째 선택된 이미지 사용
+        const aboutImages = reservationData?.about?.images;
+        const selectedImages = ImageHelpers.getSelectedImages(aboutImages);
+
+        if (selectedImages.length > 0) {
+            img.src = selectedImages[0].url;
+            img.alt = selectedImages[0].description || 'Reservation About Image';
+        } else {
+            ImageHelpers.applyPlaceholder(img);
+        }
+    }
+
+    /**
      * 예약 이미지 섹션 매핑
      */
     mapReservationImage() {
@@ -304,28 +329,47 @@ class ReservationMapper extends BaseDataMapper {
             if (bannerImage && bannerImage.url) {
                 bannerImageElement.style.backgroundImage = `url('${bannerImage.url}')`;
             } else {
-                bannerImageElement.style.backgroundImage = `url('${ImageHelpers.EMPTY_IMAGE_WITH_ICON}')`;
+                // placeholder 배경 이미지
+                ImageHelpers.applyPlaceholder(bannerImageElement);
             }
         }
 
-        // Marquee 매핑
-        this.mapMarquee();
     }
 
     /**
-     * Marquee 매핑 (property.nameEn)
+     * Full Banner 섹션 매핑
+     * property.nameEn → [data-property-name-en]
+     * property.images[0].exterior[] → [data-main-banner] 배경 이미지
      */
-    mapMarquee() {
-        const marqueeContainer = this.safeSelect('[data-marquee-property-name]');
-        if (!marqueeContainer) return;
+    mapFullBanner() {
+        if (!this.isDataLoaded) return;
 
-        const propertyNameEn = this.data.property?.nameEn || 'Property Name';
+        // 배너 타이틀 매핑 (property.nameEn)
+        const bannerTitle = this.safeSelect('[data-property-name-en]');
+        if (bannerTitle) {
+            const nameEn = this.safeGet(this.data, 'property.nameEn');
+            bannerTitle.textContent = this.sanitizeText(nameEn, 'PROPERTY NAME').toUpperCase();
+        }
 
-        marqueeContainer.innerHTML = '';
-        for (let i = 0; i < 5; i++) {
-            const span = document.createElement('span');
-            span.textContent = propertyNameEn;
-            marqueeContainer.appendChild(span);
+        // 배너 배경 이미지 매핑 - 섹션 자체에 배경 설정
+        const bannerSection = this.safeSelect('[data-main-banner]');
+        if (!bannerSection) return;
+
+        const propertyImages = this.safeGet(this.data, 'property.images');
+        const exteriorImages = this.safeGet(propertyImages?.[0], 'exterior');
+
+        // ImageHelpers를 사용하여 첫 번째 선택된 이미지 가져오기
+        const selectedImages = ImageHelpers.getSelectedImages(exteriorImages);
+
+        if (selectedImages.length > 0) {
+            const firstImage = selectedImages[0];
+            bannerSection.style.backgroundImage = `url('${firstImage.url}')`;
+            bannerSection.style.backgroundSize = 'cover';
+            bannerSection.style.backgroundPosition = 'center';
+            bannerSection.style.backgroundRepeat = 'no-repeat';
+        } else {
+            // placeholder 배경 이미지
+            ImageHelpers.applyPlaceholder(bannerSection);
         }
     }
 
@@ -350,8 +394,10 @@ class ReservationMapper extends BaseDataMapper {
         this.mapReservationGuideSection();
         this.mapCheckInOutSection();
         this.mapRefundSection();
+        this.mapReservationAboutImage();
         this.mapReservationImage();
         this.mapBannerAndMarquee();
+        this.mapFullBanner();
 
         // 메타 태그 업데이트 (페이지별 SEO 적용)
         const property = this.data.property;
