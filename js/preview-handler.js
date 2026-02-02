@@ -237,9 +237,9 @@ class PreviewHandler {
      */
     getDefaultFonts() {
         return {
-            koMain: "'Aritaburi', sans-serif",
-            koSub: "'Aritaburi', sans-serif",
-            enMain: "'Amandine', serif"
+            koMain: "'ReperepointSpecialItalic', sans-serif",
+            koSub: "'Pretendard', sans-serif",
+            enMain: "'Chonburi', sans-serif"
         };
     }
 
@@ -248,8 +248,8 @@ class PreviewHandler {
      */
     getDefaultColors() {
         return {
-            primary: '#fdfcf4',
-            secondary: '#31423d'
+            primary: '#f5f5f5',
+            secondary: '#1D3A5F'
         };
     }
 
